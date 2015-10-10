@@ -1,0 +1,80 @@
+#pragma once
+#include <glm/glm.hpp>
+#include <memory/Alloc.h>
+#include <gfx/GFXLibraryDefine.h>
+namespace gfx {
+typedef int ModelHandle;
+typedef unsigned short TerrainHandle;
+
+struct ModelObject {
+	ModelHandle Model;
+	unsigned int InstanceCount;
+};
+
+struct ShaderInput {
+	glm::mat4 World;
+	glm::vec4 Color;
+};
+
+struct CameraData {
+	glm::mat4 View;
+	glm::mat4 Proj;
+	glm::mat4 ProjView;
+	glm::vec3 Position;
+	glm::vec3 Forward;
+};
+
+struct Viewport{
+	float x;
+	float y;
+	float width;
+	float height;
+};
+
+struct View {
+	CameraData camera;
+	Viewport viewport;
+};
+
+struct TerrainObject {
+	TerrainHandle	Terrain; //Handle for the terrain containing the textures
+	glm::mat4		Transform; //Tansformation of terrain. Dont include scale it will be added later in the pipeline
+	float			HeightScale; //Scale in Y
+	float			Size; //Size in X and Z
+	glm::vec3		Color; //Color of terrain
+};
+
+class RenderQueue {
+  public:
+	RenderQueue();
+	~RenderQueue();
+	GFX_API void Enqueue(ModelHandle model, const rVector<ShaderInput>& inputs);
+	GFX_API void Enqueue(const TerrainObject& to);
+	GFX_API void Clear();
+	void CreateBuffer();
+	void UpdateBuffer();
+
+	GFX_API void AddView(const View& v) {
+		m_Views.push_back(v);
+	}
+	const rVector<ModelObject>& GetModelQueue() const {
+		return m_ModelQueue;
+	}
+	const rVector<TerrainObject>& GetTerrainQueue() const {
+		return m_TerrainQueue;
+	}
+	const rVector<View>& GetViews() const {
+		return m_Views;
+	}
+
+  private:
+	rVector<ModelObject>			m_ModelQueue;
+	rVector<TerrainObject>			m_TerrainQueue;
+	CameraData						m_CameraData;
+	rVector<View>					m_Views;
+	rVector<ShaderInput>			m_ShaderInputBuffer;
+
+	const int						MAX_OBJECTS = 1000; //change this to increase the number of items to render //also need to update shader
+	const int						SIZE_OF_OBJECT = sizeof(ShaderInput);
+};
+}

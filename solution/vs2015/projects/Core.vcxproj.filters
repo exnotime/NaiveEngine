@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="core">
+      <UniqueIdentifier>{4E40957C-3A77-960D-E363-7C10CF79120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\components">
+      <UniqueIdentifier>{C3BC72F5-2F48-E0B9-3859-63AEA4633CBA}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\datasystem">
+      <UniqueIdentifier>{9CD7F597-0863-635C-1174-E6507D7EBF5C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\subsystem">
+      <UniqueIdentifier>{CC4E2D63-B81C-2169-A1B0-918F8D1DFDCD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\source\core\Engine.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\Entity.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\EntityManager.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\Window.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\components\ComponentTypes.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\components\ModelComponent.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\components\PlacementComponent.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\datasystem\ComponentBuffer.h">
+      <Filter>core\datasystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\datasystem\ComponentManager.h">
+      <Filter>core\datasystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h">
+      <Filter>core\subsystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\imgui_impl_sdl.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\stb_rect_pack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\stb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\imgui\stb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\source\core\Engine.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\EntityManager.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\Window.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp">
+      <Filter>core\datasystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\main.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\imgui\imgui_impl_sdl.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
