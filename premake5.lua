@@ -15,11 +15,9 @@ solution "NaiveEngine"
             location_path = location_path .. "/projects"
         end
 
-
     configuration { "Debug" }
         defines { "DEBUG" }
         flags { "Symbols" }
-
 
     configuration { "Release" }
         defines { "NDEBUG", "RELEASE" }
@@ -31,24 +29,24 @@ solution "NaiveEngine"
     configuration { "Release" }
         targetdir ( "bin/" .. "/release" )
 
-
-	project "Core"
-		targetname "NaiveEngine"
+	project "CORE"
+		targetname "CORE"
 		debugdir ""
 		location ( location_path )
 		language "C++"
 		kind "ConsoleApp"
-		files { "source/core/**.h","source/core/**.cpp", "source/imgui/*" }
+		defines { "GLM_FORCE_RADIANS" }
+		files { "source/core/**", "source/imgui/*" }
 		includedirs { "include", "source" }
 		links { "SDL2", "SDL2main", "gfx", "opengl32", "glew32" }
 
-	project "gfx"
-		targetname "gfx"
+	project "GFX"
+		targetname "GFX"
 		debugdir ""
 		location ( location_path )
 		language "C++"
 		kind "SharedLib"
-		defines { "GFX_DLL_EXPORT" }
+		defines { "GFX_DLL_EXPORT","GLM_FORCE_RADIANS" }
 		files {"source/gfx/*.cpp", "source/gfx/*.h"}
 		includedirs { "include", "source"}
 		links { "Soil2", "assimp", "opengl32", "glew32" }

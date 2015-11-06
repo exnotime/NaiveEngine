@@ -33,48 +33,11 @@ void Engine::Init() {
 	ws.Title = "Naive engine";
 	ws.Vsync = true;
 	m_Window->Initialize(ws);
-
-	m_GFXEngine = new gfx::GraphicsEngine();
-	gfx::GraphicsSettings gs;
-	gs.Width = ws.Width;
-	gs.Height = ws.Height;
-	m_GFXEngine->Initialize(gs);
-
-	m_Cube = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
-	gfx::g_ModelBank.BuildBuffers();
-	m_Proj = glm::perspectiveFov(50.0f, 1280.0f, 720.0f, 0.1f, 100.0f);
-	m_RenderQueue = m_GFXEngine->GetRenderQueue();
 	ImGui_ImplSdl_Init(m_Window->GetWindow());
-
 	g_ComponentManager.Init();
-
-	PlacementComponent pc;
-	pc.Position = glm::vec3(0, 0, 2);
-	pc.Orientation = glm::quat(cos(1.6f), 1.0f, 0.0f, 0.0f);
-	pc.Scale = glm::vec3(0.2f);
-	g_ComponentManager.CreateComponent<PlacementComponent>(pc, m_Entity);
 }
 
 void Engine::Run() {
-	//temp stuff
-	gfx::View view;
-	view.camera.Far = 100.0f;
-	view.camera.Forward = glm::vec3(0, 0, 1);
-	view.camera.Fov = 50.0f;
-	view.camera.Near = 0.01f;
-	view.camera.Position = glm::vec3(0);
-	view.camera.Proj = m_Proj;
-	view.camera.View = glm::lookAt(glm::vec3(0), glm::vec3(0, 0, 5), glm::vec3(0, 1, 0));
-	view.camera.ProjView = view.camera.Proj * view.camera.View;
-	view.camera.Right = glm::vec3(-1, 0, 0);
-	view.camera.Up = glm::vec3(0, 1, 0);
-	
-	view.viewport.width = 1280;
-	view.viewport.height = 720;
-	view.viewport.x = 0;
-	view.viewport.y = 0;
-
-	
 	//handle events
 	SDL_Event event;
 	bool quit = false;

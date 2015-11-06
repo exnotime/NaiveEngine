@@ -4,42 +4,42 @@
 
 void gfx::Camera::CalculateViewProjection() {
 	m_Orientation	= glm::normalize( m_Orientation );
-	m_View			= glm::lookAt( m_Position, m_Position + this->GetForward(), this->GetUp() );
-	m_Projection	= glm::perspective( m_Lens.VerticalFOV, m_Lens.WindowWidth / static_cast<float>(m_Lens.WindowHeight), m_Lens.Near, m_Lens.Far );
+	m_CamData.View	= glm::lookAt(m_CamData.Position, m_CamData.Position + this->GetForward(), this->GetUp() );
+	m_CamData.Proj	= glm::perspective(m_CamData.Fov, m_CamData.Width / static_cast<float>(m_CamData.Height), m_CamData.Near, m_CamData.Far );
 }
 
 void gfx::Camera::MoveWorld(const glm::vec3& distanceToMove) {
-	m_Position += distanceToMove;
+	m_CamData.Position += distanceToMove;
 }
 
 void gfx::Camera::MoveRelative(const glm::vec3& distanceToMove) {
-	m_Position += distanceToMove.x * (m_Orientation * m_Right	);
-	m_Position += distanceToMove.y * (m_Orientation * m_Up		);
-	m_Position -= distanceToMove.z * (m_Orientation * m_Forward	);
+	m_CamData.Position += distanceToMove.x * (m_Orientation * m_CamData.Right	);
+	m_CamData.Position += distanceToMove.y * (m_Orientation * m_CamData.Up		);
+	m_CamData.Position -= distanceToMove.z * (m_Orientation * m_CamData.Forward	);
 }
 
 void gfx::Camera::YawWorld(const float radians) {
-	RotateAroundNormalizedAxis( m_Up, radians );
+	RotateAroundNormalizedAxis(m_CamData.Up, radians );
 }
 
 void gfx::Camera::YawRelative(const float radians) {
-	RotateAroundNormalizedAxis( m_Orientation * m_Up, radians );
+	RotateAroundNormalizedAxis( m_Orientation * m_CamData.Up, radians );
 }
 
 void gfx::Camera::PitchWorld(const float radians) {
-	RotateAroundNormalizedAxis( m_Right, radians );
+	RotateAroundNormalizedAxis(m_CamData.Right, radians );
 }
 
 void gfx::Camera::PitchRelative(const float radians) {
-	RotateAroundNormalizedAxis( m_Orientation * m_Right, radians );
+	RotateAroundNormalizedAxis( m_Orientation * m_CamData.Right, radians );
 }
 
 void gfx::Camera::RollWorld(const float radians) {
-	RotateAroundNormalizedAxis( m_Forward, radians );
+	RotateAroundNormalizedAxis(m_CamData.Forward, radians );
 }
 
 void gfx::Camera::RollRelative(const float radians) {
-	RotateAroundNormalizedAxis( m_Orientation * m_Forward, radians );
+	RotateAroundNormalizedAxis( m_Orientation * m_CamData.Forward, radians );
 }
 
 void gfx::Camera::RotateAroundNormalizedAxis(const glm::vec3& normalizedRotationAxis, const float radians) {
@@ -53,19 +53,19 @@ void gfx::Camera::RotateWithQuaternion(const glm::quat& rotation) {
 }
 
 const glm::vec3 gfx::Camera::GetForward() const {
-	return m_Orientation * m_Forward;
+	return m_Orientation * m_CamData.Forward;
 }
 
 const glm::vec3 gfx::Camera::GetUp() const {
-	return m_Orientation * m_Up;
+	return m_Orientation * m_CamData.Up;
 }
 
 const glm::vec3 gfx::Camera::GetRight() const {
-	return m_Orientation * m_Right;
+	return m_Orientation * m_CamData.Right;
 }
 
 const glm::vec3& gfx::Camera::GetPosition() const {
-	return m_Position;
+	return m_CamData.Position;
 }
 
 const glm::quat& gfx::Camera::GetOrientation() const {
@@ -73,39 +73,35 @@ const glm::quat& gfx::Camera::GetOrientation() const {
 }
 
 const glm::mat4& gfx::Camera::GetView() const {
-	return m_View;
+	return m_CamData.View;
 }
 
 const glm::mat4& gfx::Camera::GetProjection() const {
-	return m_Projection;
+	return m_CamData.Proj;
 }
 
 const glm::mat4 gfx::Camera::GetViewProjection() const {
-	return m_Projection * m_View;
+	return m_CamData.Proj * m_CamData.View;
 }
 
-const gfx::CameraLens& gfx::Camera::GetLens() const {
-	return m_Lens;
+const gfx::CameraData& gfx::Camera::GetData() const {
+	return m_CamData;
 }
 
 glm::vec3& gfx::Camera::GetEditablePosition() {
-	return m_Position;
+	return m_CamData.Position;
 }
 
-gfx::CameraLens& gfx::Camera::GetEditableLens() {
-	return m_Lens;
+gfx::CameraData& gfx::Camera::GetEditableData() {
+	return m_CamData;
 }
 
 void gfx::Camera::SetPosition(const glm::vec3& newPosition) {
-	m_Position = newPosition;
+	m_CamData.Position = newPosition;
 }
 
 void gfx::Camera::SetOrientation(const glm::quat& newOrientation) {
 	m_Orientation = newOrientation;
-}
-
-void gfx::Camera::SetLens(const CameraLens& newCameraLens) {
-	m_Lens = newCameraLens;
 }
 
 void gfx::Camera::SetMoveSpeed(const float newMoveSpeed) {

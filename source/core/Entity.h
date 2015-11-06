@@ -1,5 +1,4 @@
 #pragma once
-#include "components/ComponentTypes.h"
 #include <vector>
 struct Entity {
 	unsigned int UID = 0;

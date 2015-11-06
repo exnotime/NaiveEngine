@@ -15,6 +15,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/quaternion.hpp>
+#include "RenderQueue.h"
 namespace gfx {
 // Lens used for calculating the projection matrix of the camera(Camera) provided by the Graphics Engine.
 struct CameraLens {
@@ -86,26 +87,19 @@ class Camera {
 	const glm::mat4&		GetProjection() const;
 	// WARNING: Does calculations. Call as few times as possible.
 	const glm::mat4			GetViewProjection() const;
-	const CameraLens&		GetLens() const;
+	const CameraData&		GetData() const;
 
 	glm::vec3&				GetEditablePosition();
 
 	// Example of Use: GetEditableLens().FOV = 90.0f; Do not assign the entire lens to a local variable since that will create a copy.
-	CameraLens&				GetEditableLens();
+	CameraData&				GetEditableData();
 
 	void					SetPosition(const glm::vec3& newPosition);
 	void					SetOrientation(const glm::quat& newOrientation);
-	void					SetLens(const CameraLens& newCameraLens);
 	virtual void			SetMoveSpeed(const float newMoveSpeed);
 
   private:
-	const	glm::vec3		m_Forward = glm::vec3(0.0f, 0.0f, -1.0f);			// z-axis pointing out of screen is standard for GL.
-	const	glm::vec3		m_Up = glm::vec3(0.0f, 1.0f, 0.0f);			// y-axis pointing up is standard for GL.
-	const	glm::vec3		m_Right = glm::vec3(1.0f, 0.0f, 0.0f);			// x-axis pointing right is standard for GL.
-	glm::vec3		m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::quat		m_Orientation = glm::quat(1.0f, 0.0f, 0.0f, 0.0f);
-	glm::mat4		m_View = glm::mat4(1.0f);
-	glm::mat4		m_Projection = glm::mat4(1.0f);
-	CameraLens		m_Lens;
+	  CameraData m_CamData;
+	  glm::quat m_Orientation;
 };
 }

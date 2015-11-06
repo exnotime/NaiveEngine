@@ -1,6 +1,8 @@
 #include "ComponentManager.h"
 #include "../components/PlacementComponent.h"
 #include "../components/ModelComponent.h"
+#include <gfx/Camera.h>
+
 ComponentManager::~ComponentManager(){
 	//release all buffers
 	for (auto& buffer : m_Buffers) {
@@ -17,6 +19,7 @@ void ComponentManager::Init(){
 	//create Buffers for every component in the game
 	CreateComponentBuffer<PlacementComponent>(1000);
 	CreateComponentBuffer<ModelComponent>(1000);
+	CreateComponentBuffer<gfx::Camera>(1);
 } 
 
 ComponentManager::ComponentManager() {
