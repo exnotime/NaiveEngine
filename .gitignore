@@ -1,5 +1,7 @@
 #imgui
 imgui.ini
+
+#premake
 solution/
 
 ## Ignore Visual Studio temporary files, build results, and
