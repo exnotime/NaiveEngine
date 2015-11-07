@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="core">
@@ -12,6 +12,9 @@
     </Filter>
     <Filter Include="core\subsystem">
       <UniqueIdentifier>{CC4E2D63-B81C-2169-A1B0-918F8D1DFDCD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\subsystem\systems">
+      <UniqueIdentifier>{F348E714-DF42-1067-C8AF-A677B44876D3}</UniqueIdentifier>
     </Filter>
     <Filter Include="imgui">
       <UniqueIdentifier>{0098A80F-6CAC-D0C0-352E-7420A101CDF1}</UniqueIdentifier>
@@ -48,6 +51,12 @@
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h">
       <Filter>core\subsystem</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSCamera.h">
+      <Filter>core\subsystem\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSGraphics.h">
+      <Filter>core\subsystem\systems</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\source\imgui\imconfig.h">
       <Filter>imgui</Filter>
     </ClInclude>
@@ -69,6 +78,9 @@
     <ClInclude Include="..\..\..\source\imgui\stb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\SubSystemSet.h">
+      <Filter>core\subsystem</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\Engine.cpp">
@@ -86,6 +98,12 @@
     <ClCompile Include="..\..\..\source\core\main.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSCamera.cpp">
+      <Filter>core\subsystem\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSGraphics.cpp">
+      <Filter>core\subsystem\systems</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\imgui\imgui.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
@@ -94,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\imgui\imgui_impl_sdl.cpp">
       <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp">
+      <Filter>core\subsystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

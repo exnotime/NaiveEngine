@@ -16,4 +16,5 @@ public:
 private:
 	gfx::GraphicsEngine* m_GFXEngine;
 	gfx::RenderQueue* m_RenderQueue;
+	int m_Model;
 };

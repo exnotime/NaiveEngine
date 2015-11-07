@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{2EB4837C-1AEB-840D-C3D7-6A10AFED000F}</ProjectGuid>
+    <ProjectGuid>{CE27837C-BA5E-840D-634B-6A104F61000F}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Core</RootNamespace>
+    <RootNamespace>CORE</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -42,16 +42,18 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\bin\debug\</OutDir>
-    <IntDir>obj\x64\Debug\Core\</IntDir>
-    <TargetName>NaiveEngine</TargetName>
+    <IntDir>obj\x64\Debug\CORE\</IntDir>
+    <TargetName>CORE</TargetName>
     <TargetExt>.exe</TargetExt>
+    <IncludePath>C:\Users\krunk\Desktop\NaiveEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\bin\release\</OutDir>
-    <IntDir>obj\x64\Release\Core\</IntDir>
-    <TargetName>NaiveEngine</TargetName>
+    <IntDir>obj\x64\Release\CORE\</IntDir>
+    <TargetName>CORE</TargetName>
     <TargetExt>.exe</TargetExt>
+    <IncludePath>C:\Users\krunk\Desktop\NaiveEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -105,6 +107,9 @@
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentBuffer.h" />
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentManager.h" />
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h" />
+    <ClInclude Include="..\..\..\source\core\subsystem\SubSystemSet.h" />
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSCamera.h" />
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSGraphics.h" />
     <ClInclude Include="..\..\..\source\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui_impl_sdl.h" />
@@ -119,13 +124,16 @@
     <ClCompile Include="..\..\..\source\core\Window.cpp" />
     <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp" />
     <ClCompile Include="..\..\..\source\core\main.cpp" />
+    <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp" />
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSCamera.cpp" />
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSGraphics.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui_impl_sdl.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="gfx.vcxproj">
-      <Project>{AA76880B-1680-887C-9FFB-9E7C0B04947C}</Project>
+    <ProjectReference Include="GFX.vcxproj">
+      <Project>{4AEA870B-B6F3-877C-3F6F-9E7CAB77937C}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

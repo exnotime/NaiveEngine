@@ -1,4 +1,4 @@
-#include "SubsSystemSet.h"
+#include "SubSystemSet.h"
 #include <algorithm>
 using namespace core;
 SubSystemSet::SubSystemSet() {
@@ -52,6 +52,8 @@ void SubSystemSet::ShutdownSubSystems() {
 	std::sort(m_Entries.begin(), m_Entries.end(), sortByShutdown);
 
 	for (auto& system : m_Entries) {
-		system.ss->Startup();
+		system.ss->Shutdown();
+		delete system.ss;
 	}
+	m_Entries.clear();
 }

@@ -11,10 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{AA76880B-1680-887C-9FFB-9E7C0B04947C}</ProjectGuid>
+    <ProjectGuid>{4AEA870B-B6F3-877C-3F6F-9E7CAB77937C}</ProjectGuid>
     <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>gfx</RootNamespace>
+    <RootNamespace>GFX</RootNamespace>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -42,15 +42,15 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\..\..\bin\debug\</OutDir>
-    <IntDir>obj\x64\Debug\gfx\</IntDir>
-    <TargetName>gfx</TargetName>
+    <IntDir>obj\x64\Debug\GFX\</IntDir>
+    <TargetName>GFX</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\..\..\bin\release\</OutDir>
-    <IntDir>obj\x64\Release\gfx\</IntDir>
-    <TargetName>gfx</TargetName>
+    <IntDir>obj\x64\Release\GFX\</IntDir>
+    <TargetName>GFX</TargetName>
     <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -68,7 +68,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>Soil2.lib;assimp.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\..\..\bin\debug\gfx.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\bin\debug\GFX.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -91,7 +91,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>Soil2.lib;assimp.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\..\..\bin\release\gfx.lib</ImportLibrary>
+      <ImportLibrary>..\..\..\bin\release\GFX.lib</ImportLibrary>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

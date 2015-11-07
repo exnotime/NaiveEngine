@@ -16,6 +16,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "RenderQueue.h"
+#include "GFXLibraryDefine.h"
 namespace gfx {
 // Lens used for calculating the projection matrix of the camera(Camera) provided by the Graphics Engine.
 struct CameraLens {
@@ -40,13 +41,13 @@ class Camera {
 	virtual void 			Update(float deltaTime) { };
 
 	// Should be called just before View or Projection is needed. Get result through GetView(), GetProjection(), and/or GetViewProjection().
-	void					CalculateViewProjection();
+	GFX_API void			CalculateViewProjection();
 
 	// Move camera along the worlds coordinate axises.
 	void					MoveWorld(const glm::vec3& distanceToMove);
 
 	// Move camera along the cameras base vectors. x is right, y up, and -z forward (GL Standard).
-	void					MoveRelative(const glm::vec3& distanceToMove);
+	GFX_API void					MoveRelative(const glm::vec3& distanceToMove);
 
 	// Rotate camera around world y-axis (up-vector).
 	void					YawWorld(const float radians);
@@ -87,7 +88,7 @@ class Camera {
 	const glm::mat4&		GetProjection() const;
 	// WARNING: Does calculations. Call as few times as possible.
 	const glm::mat4			GetViewProjection() const;
-	const CameraData&		GetData() const;
+	const GFX_API CameraData&		GetData() const;
 
 	glm::vec3&				GetEditablePosition();
 
@@ -96,7 +97,7 @@ class Camera {
 
 	void					SetPosition(const glm::vec3& newPosition);
 	void					SetOrientation(const glm::quat& newOrientation);
-	virtual void			SetMoveSpeed(const float newMoveSpeed);
+	virtual GFX_API void	SetMoveSpeed(const float newMoveSpeed);
 
   private:
 	  CameraData m_CamData;
