@@ -38,7 +38,7 @@ solution "NaiveEngine"
 		defines { "GLM_FORCE_RADIANS" }
 		files { "source/core/**", "source/imgui/*" }
 		includedirs { "include", "source" }
-		links { "SDL2", "SDL2main", "gfx", "opengl32", "glew32" }
+		links { "glfw3", "glfw3dll", "gfx", "opengl32", "glew32" }
 
 	project "GFX"
 		targetname "GFX"

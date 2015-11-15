@@ -16,10 +16,14 @@ ComponentManager& ComponentManager::GetInstance(){
 }
 
 void ComponentManager::Init(){
-	//create Buffers for every component in the game
-	CreateComponentBuffer<PlacementComponent>(1000);
-	CreateComponentBuffer<ModelComponent>(1000);
+	//create Buffers for components in the game
+	//remember to set flag for components
+	PlacementComponent::Flag = CreateBitFlag(CreateComponentBuffer<PlacementComponent>(100));
+	ModelComponent::Flag = CreateBitFlag(CreateComponentBuffer<ModelComponent>(100));
+	//no need to set flag for pure data storage
 	CreateComponentBuffer<gfx::Camera>(1);
+
+	m_ComponentTypeCount = GetComponentTypeID<LastComponent>();
 } 
 
 ComponentManager::ComponentManager() {

@@ -1,5 +1,4 @@
 #include "GraphicsEngine.h"
-#include <SDL2/SDL.h>
 #include <GL/glew.h>
 #include <glm/gtx/transform.hpp>
 #include "Camera.h"
@@ -104,6 +103,14 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	//transparency
 	m_TransparencyProgram = new TransparencyProgram();
 	m_TransparencyProgram->Initialize(m_GraphicsSettings.Width, m_GraphicsSettings.Height);
+	//sky
+	m_SkyCubeTex = new Texture();
+	m_SkyCubeTex->Init("asset/sky/skybox_rad.dds", TEXTURE_CUBE);
+	m_IrrCubeTex = new Texture();
+	m_IrrCubeTex->Init("asset/sky/skybox_irr.dss", TEXTURE_CUBE);
+	m_SkyProgram = new SkyProgram();
+	m_SkyProgram->Init();
+	m_SkyProgram->SetSkyTexture("asset/sky/skybox.dds");
 }
 
 void GraphicsEngine::Deinitialize() {
@@ -149,7 +156,7 @@ void GraphicsEngine::DrawGeometry() {
 	for ( auto& view : m_RenderQueue->GetViews() ) {
 		glViewport( ( GLint )view.viewport.x, ( GLint )view.viewport.y, ( GLsizei )view.viewport.width, ( GLsizei )view.viewport.height );
 		// Render Sky
-		//m_SkyProgram->Render( view.camera );
+		m_SkyProgram->Render( view.camera );
 		// Render Terrains
 		//g_TerrainManager.RenderTerrains( m_RenderQueue, view.camera );
 		g_ModelBank.ApplyBuffers();
@@ -202,7 +209,9 @@ void GraphicsEngine::DrawLight() {
 	prog->SetUniformTextureHandle( "gDepthBuffer",		m_GBuffer->GetTexture( GBUFFER_TEX::DEPTH_SENCIL32 ),	 3 );
 	prog->SetUniformTextureHandle( "g_BRDFTex",			m_IntegratedIBL,										 4 );
 	prog->SetUniformTextureHandle( "g_ShadowMap",		m_ShadowMap->GetTexture(),								 5 );
-	
+	m_SkyCubeTex->Apply(prog->FetchUniform("g_SkyCubeTex"), 6);
+	m_IrrCubeTex->Apply(prog->FetchUniform("g_IrradianceCubeTex"), 7);
+
 	prog->SetUniformMat4( "gLightMatrix",		m_ShadowMap->GetLightMatrix() );
 	prog->SetUniformUInt( "numDLights",		  g_LightEngine.GetDirLightCount() );
 	prog->SetUniformUInt( "gTotalLightCount", g_LightEngine.GetPointLightCount() );

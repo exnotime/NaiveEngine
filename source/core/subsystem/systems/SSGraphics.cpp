@@ -7,7 +7,7 @@
 #include "../../datasystem/ComponentManager.h"
 #include "../../EntityManager.h"
 #include "../../components/PlacementComponent.h"
-#include "../../components/ComponentTypes.h"
+#include "../../components/ModelComponent.h"
 SSGraphics::SSGraphics() {
 
 }
@@ -23,22 +23,15 @@ void SSGraphics::Startup() {
 	gs.Height = 900;
 	m_GFXEngine->Initialize(gs);
 	m_RenderQueue = m_GFXEngine->GetRenderQueue();
-	m_Model = gfx::g_ModelBank.LoadModel("asset/model/cube.dae");
+	m_Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
 	gfx::g_ModelBank.BuildBuffers();
-	Entity& e = g_EntityManager.CreateEntity();
+	Entity& entity = g_EntityManager.CreateEntity();
 	PlacementComponent pc;
-	pc.Position = glm::vec3(0, 0, -2);
-	g_ComponentManager.CreateComponent<PlacementComponent>(pc, e);
-	{
-		int type = GetComponentTypeID<gfx::Camera>();
-		int type2 = GetComponentTypeID<gfx::Camera>();
-		int type3 = GetComponentTypeID<PlacementComponent>();
-	}
-	{
-		int type4 = GetComponentTypeID<gfx::Camera>();
-		int type5 = GetComponentTypeID<gfx::Camera>();
-		int type6 = GetComponentTypeID<PlacementComponent>();
-	}
+	pc.Position = glm::vec3(0, 0, -10);
+	g_ComponentManager.CreateComponent<PlacementComponent>(pc, entity, GET_TYPE_ID(PlacementComponent));
+	ModelComponent mc;
+	mc.Model = m_Model;
+	g_ComponentManager.CreateComponent<ModelComponent>(mc, entity, GET_TYPE_ID(ModelComponent));
 }
 
 void SSGraphics::Update(const float deltaTime) {
@@ -51,15 +44,21 @@ void SSGraphics::Update(const float deltaTime) {
 	view.viewport.x = 0;
 	view.viewport.y = 0;
 	m_RenderQueue->AddView(view);
+
 	std::vector<gfx::ShaderInput> inputList;
 	gfx::ShaderInput input;
-	PlacementComponent* pcs;
-	for (int pc = 0; pc < g_ComponentManager.GetBuffer<PlacementComponent>(&pcs); pc++) {
-		input.World = glm::translate(pcs[pc].Position) * glm::scale(pcs[pc].Scale) * glm::mat4_cast(pcs[pc].Orientation);
-		input.Color = glm::vec4(1);
-		inputList.push_back(input);
+	int flag = PlacementComponent::Flag | ModelComponent::Flag;
+
+	for (auto& entity : g_EntityManager.GetEntityList()){
+		if (entity.ComponentBitfield & flag) {
+			PlacementComponent* pc = g_ComponentManager.GetComponent<PlacementComponent>(entity);
+			ModelComponent* mc = g_ComponentManager.GetComponent<ModelComponent>(entity);
+
+			input.World = glm::translate(pc->Position) * glm::scale(pc->Scale) * glm::mat4_cast(pc->Orientation);
+			input.Color = glm::vec4(1);
+			m_RenderQueue->Enqueue(mc->Model, input);
+		}
 	}
-	m_RenderQueue->Enqueue(m_Model, inputList);
 
 	gfx::Light dl;
 	dl.Color = glm::vec4(1);

@@ -1,4 +1,5 @@
 #pragma once
-struct ModelComponent {
+struct ModelComponent{
 	unsigned int Model;
+	static unsigned int Flag;
 };

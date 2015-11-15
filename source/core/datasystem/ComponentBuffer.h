@@ -63,7 +63,7 @@ public:
 	component* GetComponent(int index) {
 		if (index >= m_Size)
 			return nullptr;
-		return &((component*)(m_Buffer))[m_Handles[index]];
+		return &(static_cast<component*>(m_Buffer)[m_Handles[index]]);
 	}
 	
 	void* GetComponentList() {

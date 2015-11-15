@@ -45,7 +45,6 @@
     <IntDir>obj\x64\Debug\CORE\</IntDir>
     <TargetName>CORE</TargetName>
     <TargetExt>.exe</TargetExt>
-    <IncludePath>C:\Users\krunk\Desktop\NaiveEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -53,13 +52,12 @@
     <IntDir>obj\x64\Release\CORE\</IntDir>
     <TargetName>CORE</TargetName>
     <TargetExt>.exe</TargetExt>
-    <IncludePath>C:\Users\krunk\Desktop\NaiveEngine\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;GLM_FORCE_RADIANS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
@@ -68,7 +66,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -77,7 +75,7 @@
     <ClCompile>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NDEBUG;RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NDEBUG;RELEASE;GLM_FORCE_RADIANS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -91,7 +89,7 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -100,6 +98,7 @@
     <ClInclude Include="..\..\..\source\core\Engine.h" />
     <ClInclude Include="..\..\..\source\core\Entity.h" />
     <ClInclude Include="..\..\..\source\core\EntityManager.h" />
+    <ClInclude Include="..\..\..\source\core\Input\Input.h" />
     <ClInclude Include="..\..\..\source\core\Window.h" />
     <ClInclude Include="..\..\..\source\core\components\ComponentTypes.h" />
     <ClInclude Include="..\..\..\source\core\components\ModelComponent.h" />
@@ -112,7 +111,7 @@
     <ClInclude Include="..\..\..\source\core\subsystem\systems\SSGraphics.h" />
     <ClInclude Include="..\..\..\source\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui.h" />
-    <ClInclude Include="..\..\..\source\imgui\imgui_impl_sdl.h" />
+    <ClInclude Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui_internal.h" />
     <ClInclude Include="..\..\..\source\imgui\stb_rect_pack.h" />
     <ClInclude Include="..\..\..\source\imgui\stb_textedit.h" />
@@ -121,7 +120,11 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\Engine.cpp" />
     <ClCompile Include="..\..\..\source\core\EntityManager.cpp" />
+    <ClCompile Include="..\..\..\source\core\Input\Input.cpp" />
     <ClCompile Include="..\..\..\source\core\Window.cpp" />
+    <ClCompile Include="..\..\..\source\core\components\ComponentTypes.cpp" />
+    <ClCompile Include="..\..\..\source\core\components\ModelComponent.cpp" />
+    <ClCompile Include="..\..\..\source\core\components\PlacementComponent.cpp" />
     <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp" />
     <ClCompile Include="..\..\..\source\core\main.cpp" />
     <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp" />
@@ -129,7 +132,7 @@
     <ClCompile Include="..\..\..\source\core\subsystem\systems\SSGraphics.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\..\source\imgui\imgui_impl_sdl.cpp" />
+    <ClCompile Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GFX.vcxproj">

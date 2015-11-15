@@ -1,8 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="core">
       <UniqueIdentifier>{4E40957C-3A77-960D-E363-7C10CF79120F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\Input">
+      <UniqueIdentifier>{CD72CD4E-B92A-0F9C-2232-E8F70E09AA8C}</UniqueIdentifier>
     </Filter>
     <Filter Include="core\components">
       <UniqueIdentifier>{C3BC72F5-2F48-E0B9-3859-63AEA4633CBA}</UniqueIdentifier>
@@ -30,6 +33,9 @@
     <ClInclude Include="..\..\..\source\core\EntityManager.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\Input\Input.h">
+      <Filter>core\Input</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\source\core\Window.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -51,6 +57,9 @@
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h">
       <Filter>core\subsystem</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\SubSystemSet.h">
+      <Filter>core\subsystem</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\source\core\subsystem\systems\SSCamera.h">
       <Filter>core\subsystem\systems</Filter>
     </ClInclude>
@@ -63,7 +72,7 @@
     <ClInclude Include="..\..\..\source\imgui\imgui.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\imgui\imgui_impl_sdl.h">
+    <ClInclude Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.h">
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\imgui\imgui_internal.h">
@@ -78,9 +87,6 @@
     <ClInclude Include="..\..\..\source\imgui\stb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\subsystem\SubSystemSet.h">
-      <Filter>core\subsystem</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\Engine.cpp">
@@ -89,14 +95,29 @@
     <ClCompile Include="..\..\..\source\core\EntityManager.cpp">
       <Filter>core</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\core\Input\Input.cpp">
+      <Filter>core\Input</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\core\Window.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\components\ComponentTypes.cpp">
+      <Filter>core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\components\ModelComponent.cpp">
+      <Filter>core\components</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\components\PlacementComponent.cpp">
+      <Filter>core\components</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp">
       <Filter>core\datasystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\main.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp">
+      <Filter>core\subsystem</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\subsystem\systems\SSCamera.cpp">
       <Filter>core\subsystem\systems</Filter>
@@ -110,11 +131,8 @@
     <ClCompile Include="..\..\..\source\imgui\imgui_draw.cpp">
       <Filter>imgui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\imgui\imgui_impl_sdl.cpp">
+    <ClCompile Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.cpp">
       <Filter>imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp">
-      <Filter>core\subsystem</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

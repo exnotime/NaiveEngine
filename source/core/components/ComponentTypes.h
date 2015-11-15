@@ -1,14 +1,13 @@
 #pragma once
-static int GenerateTypeID() {
-	static int value = 0;
-	return value++;
-}
+int GenerateTypeID();
 template <typename t>
-static int GetComponentTypeID() {
+int GetComponentTypeID() {
 	static int type = GenerateTypeID();
 	return type;
 }
 
-static int CreateBitFlags(int type) {
-	return (1 << type);
-}
+int CreateBitFlag(int type);
+typedef size_t HashID;
+#define HASH(x) constexpr std::hash<std::string>()(x)
+
+#define GET_TYPE_ID(x) GetComponentTypeID<x>()

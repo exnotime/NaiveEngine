@@ -1,5 +1,6 @@
 #pragma once
 #include "../SubSystem.h"
+#include "../../Entity.h"
 namespace gfx {
 	class GraphicsEngine;
 	class RenderQueue;

@@ -32,7 +32,7 @@ struct CameraLens {
 };
 
 // Basic camera provided by the Graphics Engine. Should not be controlled directly by input devices (use inheritance or similar instead).
-class Camera {
+class GFX_API Camera {
   public:
 	// Returns true if Camera passes all tests.
 	static bool				UnitTest();
@@ -41,13 +41,13 @@ class Camera {
 	virtual void 			Update(float deltaTime) { };
 
 	// Should be called just before View or Projection is needed. Get result through GetView(), GetProjection(), and/or GetViewProjection().
-	GFX_API void			CalculateViewProjection();
+	void			CalculateViewProjection();
 
 	// Move camera along the worlds coordinate axises.
 	void					MoveWorld(const glm::vec3& distanceToMove);
 
 	// Move camera along the cameras base vectors. x is right, y up, and -z forward (GL Standard).
-	GFX_API void					MoveRelative(const glm::vec3& distanceToMove);
+	void					MoveRelative(const glm::vec3& distanceToMove);
 
 	// Rotate camera around world y-axis (up-vector).
 	void					YawWorld(const float radians);
@@ -88,7 +88,7 @@ class Camera {
 	const glm::mat4&		GetProjection() const;
 	// WARNING: Does calculations. Call as few times as possible.
 	const glm::mat4			GetViewProjection() const;
-	const GFX_API CameraData&		GetData() const;
+	const CameraData&		GetData() const;
 
 	glm::vec3&				GetEditablePosition();
 
@@ -97,7 +97,7 @@ class Camera {
 
 	void					SetPosition(const glm::vec3& newPosition);
 	void					SetOrientation(const glm::quat& newOrientation);
-	virtual GFX_API void	SetMoveSpeed(const float newMoveSpeed);
+	virtual void	SetMoveSpeed(const float newMoveSpeed);
 
   private:
 	  CameraData m_CamData;

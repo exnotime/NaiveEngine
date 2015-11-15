@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-struct SDL_Window;
+struct GLFWwindow;
 namespace core {
 struct WindowSettings {
 	int Width = 1600;
@@ -22,12 +22,12 @@ class Window {
 	~Window( );
 	void Initialize( const WindowSettings& windowSettings );
 
-	SDL_Window* GetWindow( ) const;
+	GLFWwindow* GetWindow( ) const;
 	const WindowSettings& GetWindowSettings( ) const;
 	void MakeCurrent( );
 
   private:
-	SDL_Window* m_Window = nullptr;
+	  GLFWwindow* m_Window = nullptr;
 	void* m_GLContext;
 	WindowSettings m_WindowSettings;
 	bool m_Initialized = false;

@@ -1,14 +1,15 @@
 #include "engine.h"
-#include <SDL2/SDL.h>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include "datasystem/ComponentManager.h"
 #include "subsystem/systems/SSCamera.h"
 #include "subsystem/systems/SSGraphics.h"
-
+#include "Input/Input.h"
 #include "../imgui/imgui.h"
-#include "../imgui/imgui_impl_sdl.h"
-#include <GL/glew.h>
+#include "../imgui/imgui_impl_glfw_gl3.h"
+
 using namespace core;
 Engine::Engine() {
 
@@ -17,7 +18,8 @@ Engine::Engine() {
 Engine::~Engine() {
 	delete m_Window;
 	m_SubSystemSet.ShutdownSubSystems();
-	ImGui_ImplSdl_Shutdown();
+	ImGui_ImplGlfwGL3_Shutdown();
+	glfwTerminate();
 }
 
 void Engine::Init() {
@@ -31,9 +33,12 @@ void Engine::Init() {
 	ws.Title = "Naive engine";
 	ws.Vsync = true;
 	m_Window->Initialize(ws);
-	ImGui_ImplSdl_Init(m_Window->GetWindow());
+	ImGui_ImplGlfwGL3_Init(m_Window->GetWindow(), true);
 	g_ComponentManager.Init();
-
+	glfwSetKeyCallback(m_Window->GetWindow(), KeyboardCallBack);
+	glfwSetMouseButtonCallback(m_Window->GetWindow(), MouseButtonCallback);
+	glfwSetCursorPosCallback(m_Window->GetWindow(), MousePosCallback);
+	g_Input.SetCursorMode(m_Window->GetWindow(), GLFW_CURSOR_DISABLED);
 	SSCamera* cameraSubsys = new SSCamera();
 	SSGraphics* gfxSubSys = new SSGraphics();
 	m_SubSystemSet.AddSubSystem(cameraSubsys, 0, 0, 0);
@@ -42,29 +47,29 @@ void Engine::Init() {
 }
 
 void Engine::Run() {
-	//handle events
-	SDL_Event event;
-	bool quit = false;
-	while (!quit) {
-		while (SDL_PollEvent(&event)) {
-			ImGui_ImplSdl_ProcessEvent(&event);
-			switch (event.type) {
-			case SDL_QUIT:
-					return;
-				break;
-			case SDL_KEYDOWN:
-				if (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
-					return;
-				break;
-			}
+	int mode = GLFW_CURSOR_DISABLED;
+	while (!glfwWindowShouldClose(m_Window->GetWindow())) {
+		if (g_Input.IsKeyPushed(GLFW_KEY_L)) {
+			mode = (mode == GLFW_CURSOR_NORMAL) ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL;
+			g_Input.SetCursorMode(m_Window->GetWindow(), mode);
 		}
-		ImGui_ImplSdl_NewFrame(m_Window->GetWindow());
-		m_SubSystemSet.UpdateSubSystems(ImGui::GetIO().DeltaTime);
+
+		ImGui_ImplGlfwGL3_NewFrame();
+
+		m_SubSystemSet.UpdateSubSystems(1.0f / 60.0f);
 
 		//render imgui
 		ImGui::ShowMetricsWindow();
 		glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
 		ImGui::Render();
-		SDL_GL_SwapWindow(m_Window->GetWindow());
+
+		glfwSwapBuffers(m_Window->GetWindow());
+
+		if (g_Input.IsKeyDown(GLFW_KEY_ESCAPE))
+			break;
+
+		g_Input.Update();
+		glfwPollEvents();
 	}
+
 }

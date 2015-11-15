@@ -6,6 +6,7 @@ void gfx::Camera::CalculateViewProjection() {
 	m_Orientation	= glm::normalize( m_Orientation );
 	m_CamData.View	= glm::lookAt(m_CamData.Position, m_CamData.Position + this->GetForward(), this->GetUp() );
 	m_CamData.Proj	= glm::perspective(m_CamData.Fov, m_CamData.Width / static_cast<float>(m_CamData.Height), m_CamData.Near, m_CamData.Far );
+	m_CamData.ProjView = m_CamData.Proj * m_CamData.View;
 }
 
 void gfx::Camera::MoveWorld(const glm::vec3& distanceToMove) {

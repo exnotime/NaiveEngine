@@ -15,9 +15,9 @@ SkyProgram::~SkyProgram() {
 
 void SkyProgram::Init() {
 	//load Shader
-	m_Shader = g_ShaderBank.LoadShaderProgram("../../../shader/DeferedSky.glsl");
+	m_Shader = g_ShaderBank.LoadShaderProgram("shader/DeferedSky.glsl");
 	//Load model
-	m_Model = g_ModelBank.LoadModel("../../../binasset/model/SkyCube.dae");
+	m_Model = g_ModelBank.LoadModel("asset/model/cube.obj");
 }
 void SkyProgram::Render(const CameraData& camera) {
 	glCullFace(GL_FRONT);
