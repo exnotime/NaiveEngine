@@ -1,6 +1,7 @@
 #include "ComponentManager.h"
 #include "../components/PlacementComponent.h"
 #include "../components/ModelComponent.h"
+#include "../components/RigidBodyComponent.h"
 #include <gfx/Camera.h>
 
 ComponentManager::~ComponentManager(){
@@ -20,6 +21,7 @@ void ComponentManager::Init(){
 	//remember to set flag for components
 	PlacementComponent::Flag = CreateBitFlag(CreateComponentBuffer<PlacementComponent>(100));
 	ModelComponent::Flag = CreateBitFlag(CreateComponentBuffer<ModelComponent>(100));
+	RigidBodyComponent::Flag = CreateBitFlag(CreateComponentBuffer<RigidBodyComponent>(100));
 	//no need to set flag for pure data storage
 	CreateComponentBuffer<gfx::Camera>(1);
 
@@ -27,4 +29,5 @@ void ComponentManager::Init(){
 } 
 
 ComponentManager::ComponentManager() {
+
 }

@@ -5,7 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <gfx/LightEngine.h>
 #include "../../datasystem/ComponentManager.h"
-#include "../../EntityManager.h"
+#include "../../entity/EntityManager.h"
 #include "../../components/PlacementComponent.h"
 #include "../../components/ModelComponent.h"
 SSGraphics::SSGraphics() {
@@ -24,19 +24,13 @@ void SSGraphics::Startup() {
 	m_GFXEngine->Initialize(gs);
 	m_RenderQueue = m_GFXEngine->GetRenderQueue();
 	m_Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
-	gfx::g_ModelBank.BuildBuffers();
-	Entity& entity = g_EntityManager.CreateEntity();
-	PlacementComponent pc;
-	pc.Position = glm::vec3(0, 0, -10);
-	g_ComponentManager.CreateComponent<PlacementComponent>(pc, entity, GET_TYPE_ID(PlacementComponent));
-	ModelComponent mc;
-	mc.Model = m_Model;
-	g_ComponentManager.CreateComponent<ModelComponent>(mc, entity, GET_TYPE_ID(ModelComponent));
+	
 }
 
 void SSGraphics::Update(const float deltaTime) {
+	gfx::g_ModelBank.BuildBuffers();
 	gfx::Camera* camera;
-	int i = g_ComponentManager.GetBuffer<gfx::Camera>(&camera);
+	g_ComponentManager.GetBuffer<gfx::Camera>(&camera);
 	gfx::View view;
 	view.camera = camera->GetData();
 	view.viewport.height = 900;
@@ -55,7 +49,7 @@ void SSGraphics::Update(const float deltaTime) {
 			ModelComponent* mc = g_ComponentManager.GetComponent<ModelComponent>(entity);
 
 			input.World = glm::translate(pc->Position) * glm::scale(pc->Scale) * glm::mat4_cast(pc->Orientation);
-			input.Color = glm::vec4(1);
+			input.Color = mc->Color;
 			m_RenderQueue->Enqueue(mc->Model, input);
 		}
 	}

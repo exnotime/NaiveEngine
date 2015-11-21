@@ -1,7 +1,7 @@
 #pragma once
 #include "ComponentBuffer.h"
 #include "../components/ComponentTypes.h"
-#include "../Entity.h"
+#include "../entity/Entity.h"
 #include <map>
 #define g_ComponentManager ComponentManager::GetInstance()
 struct LastComponent;

@@ -1,6 +1,5 @@
 #pragma once
 #include "../SubSystem.h"
-#include "../../Entity.h"
 namespace gfx {
 	class Camera;
 }
@@ -14,5 +13,4 @@ public:
 	virtual void Shutdown();
 
 private:
-	Entity* m_CameraEntity;
 };

@@ -13,6 +13,12 @@
     <Filter Include="core\datasystem">
       <UniqueIdentifier>{9CD7F597-0863-635C-1174-E6507D7EBF5C}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\entity">
+      <UniqueIdentifier>{FA3CCE69-66F2-465F-EFE6-40365B9B3D63}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\entity\entities">
+      <UniqueIdentifier>{0E2B7F80-FAB9-084A-A3D8-1C458F4619F0}</UniqueIdentifier>
+    </Filter>
     <Filter Include="core\subsystem">
       <UniqueIdentifier>{CC4E2D63-B81C-2169-A1B0-918F8D1DFDCD}</UniqueIdentifier>
     </Filter>
@@ -27,17 +33,14 @@
     <ClInclude Include="..\..\..\source\core\Engine.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\Entity.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\core\EntityManager.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\Input\Input.h">
       <Filter>core\Input</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\Window.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\components\CollisionComponent.h">
+      <Filter>core\components</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\components\ComponentTypes.h">
       <Filter>core\components</Filter>
@@ -48,11 +51,23 @@
     <ClInclude Include="..\..\..\source\core\components\PlacementComponent.h">
       <Filter>core\components</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\components\RigidBodyComponent.h">
+      <Filter>core\components</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentBuffer.h">
       <Filter>core\datasystem</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentManager.h">
       <Filter>core\datasystem</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\entity\Entity.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\entity\EntityFactory.h">
+      <Filter>core\entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\entity\EntityManager.h">
+      <Filter>core\entity</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h">
       <Filter>core\subsystem</Filter>
@@ -64,6 +79,12 @@
       <Filter>core\subsystem\systems</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\subsystem\systems\SSGraphics.h">
+      <Filter>core\subsystem\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSPhysics.h">
+      <Filter>core\subsystem\systems</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSStartup.h">
       <Filter>core\subsystem\systems</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\imgui\imconfig.h">
@@ -92,14 +113,14 @@
     <ClCompile Include="..\..\..\source\core\Engine.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\EntityManager.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\core\Input\Input.cpp">
       <Filter>core\Input</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\Window.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\components\CollisionComponent.cpp">
+      <Filter>core\components</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\components\ComponentTypes.cpp">
       <Filter>core\components</Filter>
@@ -110,8 +131,20 @@
     <ClCompile Include="..\..\..\source\core\components\PlacementComponent.cpp">
       <Filter>core\components</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\core\components\RigidBodyComponent.cpp">
+      <Filter>core\components</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp">
       <Filter>core\datasystem</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\entity\EntityFactory.cpp">
+      <Filter>core\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\entity\EntityManager.cpp">
+      <Filter>core\entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\entity\entities\CubeEntity.cpp">
+      <Filter>core\entity\entities</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\main.cpp">
       <Filter>core</Filter>
@@ -123,6 +156,12 @@
       <Filter>core\subsystem\systems</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\subsystem\systems\SSGraphics.cpp">
+      <Filter>core\subsystem\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSPhysics.cpp">
+      <Filter>core\subsystem\systems</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSStartup.cpp">
       <Filter>core\subsystem\systems</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\imgui\imgui.cpp">

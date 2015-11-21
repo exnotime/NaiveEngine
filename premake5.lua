@@ -36,9 +36,13 @@ solution "NaiveEngine"
 		language "C++"
 		kind "ConsoleApp"
 		defines { "GLM_FORCE_RADIANS" }
-		files { "source/core/**", "source/imgui/*" }
+		files { "source/core/**.h","source/core/**.cpp", "source/imgui/*" }
 		includedirs { "include", "source" }
-		links { "glfw3", "glfw3dll", "gfx", "opengl32", "glew32" }
+		links { "glfw3", "glfw3dll", "gfx", "physics", "opengl32", "glew32"}
+		configuration {"Release"}
+			links {"BulletDynamics", "BulletCollision", "BulletLinearMath" }
+		configuration {"Debug"}
+			links {"BulletDynamics_Debug", "BulletCollision_Debug", "BulletLinearMath_Debug" }
 
 	project "GFX"
 		targetname "GFX"
@@ -50,3 +54,17 @@ solution "NaiveEngine"
 		files {"source/gfx/*.cpp", "source/gfx/*.h"}
 		includedirs { "include", "source"}
 		links { "Soil2", "assimp", "opengl32", "glew32" }
+
+	project "PHYSICS"
+		targetname "PHYSICS"
+		debugdir ""
+		location ( location_path )
+		language "C++"
+		kind "SharedLib"
+		defines "PHYSICS_DLL_EXPORT"
+		files { "source/physics/*.cpp", "source/physics/*.h"}
+		includedirs { "include", "source" }
+		configuration {"Release"}
+			links {"BulletDynamics", "BulletCollision", "BulletLinearMath" }
+		configuration {"Debug"}
+			links {"BulletDynamics_Debug", "BulletCollision_Debug", "BulletLinearMath_Debug" }

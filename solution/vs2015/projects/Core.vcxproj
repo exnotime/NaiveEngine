@@ -66,7 +66,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;BulletLinearMath_Debug.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -89,26 +89,31 @@
       <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;glfw3dll.lib;opengl32.lib;glew32.lib;BulletDynamics.lib;BulletCollision.lib;BulletLinearMath.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\..\..\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\core\Engine.h" />
-    <ClInclude Include="..\..\..\source\core\Entity.h" />
-    <ClInclude Include="..\..\..\source\core\EntityManager.h" />
     <ClInclude Include="..\..\..\source\core\Input\Input.h" />
     <ClInclude Include="..\..\..\source\core\Window.h" />
+    <ClInclude Include="..\..\..\source\core\components\CollisionComponent.h" />
     <ClInclude Include="..\..\..\source\core\components\ComponentTypes.h" />
     <ClInclude Include="..\..\..\source\core\components\ModelComponent.h" />
     <ClInclude Include="..\..\..\source\core\components\PlacementComponent.h" />
+    <ClInclude Include="..\..\..\source\core\components\RigidBodyComponent.h" />
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentBuffer.h" />
     <ClInclude Include="..\..\..\source\core\datasystem\ComponentManager.h" />
+    <ClInclude Include="..\..\..\source\core\entity\Entity.h" />
+    <ClInclude Include="..\..\..\source\core\entity\EntityFactory.h" />
+    <ClInclude Include="..\..\..\source\core\entity\EntityManager.h" />
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystem.h" />
     <ClInclude Include="..\..\..\source\core\subsystem\SubSystemSet.h" />
     <ClInclude Include="..\..\..\source\core\subsystem\systems\SSCamera.h" />
     <ClInclude Include="..\..\..\source\core\subsystem\systems\SSGraphics.h" />
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSPhysics.h" />
+    <ClInclude Include="..\..\..\source\core\subsystem\systems\SSStartup.h" />
     <ClInclude Include="..\..\..\source\imgui\imconfig.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui.h" />
     <ClInclude Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.h" />
@@ -119,17 +124,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\Engine.cpp" />
-    <ClCompile Include="..\..\..\source\core\EntityManager.cpp" />
     <ClCompile Include="..\..\..\source\core\Input\Input.cpp" />
     <ClCompile Include="..\..\..\source\core\Window.cpp" />
+    <ClCompile Include="..\..\..\source\core\components\CollisionComponent.cpp" />
     <ClCompile Include="..\..\..\source\core\components\ComponentTypes.cpp" />
     <ClCompile Include="..\..\..\source\core\components\ModelComponent.cpp" />
     <ClCompile Include="..\..\..\source\core\components\PlacementComponent.cpp" />
+    <ClCompile Include="..\..\..\source\core\components\RigidBodyComponent.cpp" />
     <ClCompile Include="..\..\..\source\core\datasystem\ComponentManager.cpp" />
+    <ClCompile Include="..\..\..\source\core\entity\EntityFactory.cpp" />
+    <ClCompile Include="..\..\..\source\core\entity\EntityManager.cpp" />
+    <ClCompile Include="..\..\..\source\core\entity\entities\CubeEntity.cpp" />
     <ClCompile Include="..\..\..\source\core\main.cpp" />
     <ClCompile Include="..\..\..\source\core\subsystem\SubSystemSet.cpp" />
     <ClCompile Include="..\..\..\source\core\subsystem\systems\SSCamera.cpp" />
     <ClCompile Include="..\..\..\source\core\subsystem\systems\SSGraphics.cpp" />
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSPhysics.cpp" />
+    <ClCompile Include="..\..\..\source\core\subsystem\systems\SSStartup.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\..\source\imgui\imgui_impl_glfw_gl3.cpp" />
@@ -137,6 +148,9 @@
   <ItemGroup>
     <ProjectReference Include="GFX.vcxproj">
       <Project>{4AEA870B-B6F3-877C-3F6F-9E7CAB77937C}</Project>
+    </ProjectReference>
+    <ProjectReference Include="PHYSICS.vcxproj">
+      <Project>{C84E5FC0-342E-DE5B-3D46-6932A9A444BD}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

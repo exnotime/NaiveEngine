@@ -6,6 +6,8 @@
 #include "datasystem/ComponentManager.h"
 #include "subsystem/systems/SSCamera.h"
 #include "subsystem/systems/SSGraphics.h"
+#include "subsystem/systems/SSStartup.h"
+#include "subsystem/systems/SSPhysics.h"
 #include "Input/Input.h"
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw_gl3.h"
@@ -39,10 +41,12 @@ void Engine::Init() {
 	glfwSetMouseButtonCallback(m_Window->GetWindow(), MouseButtonCallback);
 	glfwSetCursorPosCallback(m_Window->GetWindow(), MousePosCallback);
 	g_Input.SetCursorMode(m_Window->GetWindow(), GLFW_CURSOR_DISABLED);
-	SSCamera* cameraSubsys = new SSCamera();
-	SSGraphics* gfxSubSys = new SSGraphics();
-	m_SubSystemSet.AddSubSystem(cameraSubsys, 0, 0, 0);
-	m_SubSystemSet.AddSubSystem(gfxSubSys, 0, 1, 0);
+
+
+	m_SubSystemSet.AddSubSystem(new SSCamera(), 0, 0, 0);
+	m_SubSystemSet.AddSubSystem(new SSGraphics(), 0, 1, 0);
+	m_SubSystemSet.AddSubSystem(new SSPhysics(), 0, 2, 0);
+	m_SubSystemSet.AddSubSystem(new SSStartup(), 0, 3, 0);
 	m_SubSystemSet.StartSubSystems();
 }
 

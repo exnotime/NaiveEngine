@@ -1,6 +1,6 @@
 #include "SSCamera.h"
 #include "../../datasystem/ComponentManager.h"
-#include "../../EntityManager.h"
+#include "../../entity/EntityManager.h"
 #include <imgui/imgui.h>
 #include <gfx/Camera.h>
 #include "../../Input/Input.h"
@@ -15,10 +15,10 @@ SSCamera::~SSCamera() {
 
 void SSCamera::Startup() {
 	//create Camera Entity
-	m_CameraEntity = &g_EntityManager.CreateEntity();
+	Entity& entity = g_EntityManager.CreateEntity();
 	//create a camera component
 	gfx::Camera cam;
-	g_ComponentManager.CreateComponent<gfx::Camera>(cam,*m_CameraEntity, GET_TYPE_ID(gfx::Camera));
+	g_ComponentManager.CreateComponent<gfx::Camera>(cam, entity, GET_TYPE_ID(gfx::Camera));
 }
 
 void SSCamera::Update(const float deltaTime) {
