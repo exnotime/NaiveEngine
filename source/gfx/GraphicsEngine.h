@@ -15,6 +15,7 @@ class TerrainDeformationProgram;
 class DeferedDecalProgram;
 class BloomProgram;
 class TransparencyProgram;
+class ParticleSystem;
 typedef int  ShaderProgramHandle;
 
 struct GraphicsSettings {
@@ -30,6 +31,7 @@ class GraphicsEngine {
 	GFX_API void Initialize(const GraphicsSettings& settings);
 	GFX_API void Deinitialize( );
 	GFX_API void Draw();
+	GFX_API void GetParticleTimes(double& update, double& render); //temp remove soon
 
 	RenderQueue* GetRenderQueue() {
 		return m_RenderQueue;
@@ -52,7 +54,7 @@ class GraphicsEngine {
 	DeferedDecalProgram*		m_DecalProgram = nullptr;
 	BloomProgram*				m_BloomProgram = nullptr;
 	TransparencyProgram*		m_TransparencyProgram = nullptr;
-
+	ParticleSystem*				m_ParticleSystem = nullptr;
 	GraphicsSettings			m_GraphicsSettings;
 	int							m_BufferOffset;
 	ShaderProgramHandle			m_PreFilterIblCompute;

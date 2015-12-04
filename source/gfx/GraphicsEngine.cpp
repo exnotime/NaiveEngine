@@ -18,6 +18,7 @@
 #include "DeferedDecalProgram.h"
 #include "BloomProgram.h"
 #include "TransparencyProgram.h"
+#include "ParticleSystem.h"
 #include "gfxutility.h"
 using namespace gfx;
 
@@ -34,6 +35,7 @@ GraphicsEngine::~GraphicsEngine() {
 	SAFE_DELETE(m_DecalProgram);
 	SAFE_DELETE(m_BloomProgram);
 	SAFE_DELETE(m_TransparencyProgram);
+	SAFE_DELETE(m_ParticleSystem);
 }
 
 void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
@@ -74,7 +76,6 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
 	glBindTexture( GL_TEXTURE_2D, 0 );
-
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle( m_PreFilterIblCompute );
 	prog->Apply();
 	glBindImageTexture( 0, m_IntegratedIBL, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16 );
@@ -107,10 +108,13 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	m_SkyCubeTex = new Texture();
 	m_SkyCubeTex->Init("asset/sky/skybox_rad.dds", TEXTURE_CUBE);
 	m_IrrCubeTex = new Texture();
-	m_IrrCubeTex->Init("asset/sky/skybox_irr.dss", TEXTURE_CUBE);
+	m_IrrCubeTex->Init("asset/sky/skybox_irr.dds", TEXTURE_CUBE);
 	m_SkyProgram = new SkyProgram();
 	m_SkyProgram->Init();
 	m_SkyProgram->SetSkyTexture("asset/sky/skybox.dds");
+	//Particles
+	m_ParticleSystem = new ParticleSystem();
+	m_ParticleSystem->Init();
 }
 
 void GraphicsEngine::Deinitialize() {
@@ -244,7 +248,7 @@ void GraphicsEngine::DrawPostFX() {
 	glDisable( GL_DEPTH_TEST );
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_FXAAShader);
 	prog->Apply();
-	prog->SetUniformTextureHandle("InputTex", m_BloomProgram->GetFinalTexture(), 0);
+	prog->SetUniformTextureHandle("InputTex", m_GBuffer->GetTexture(GBUFFER_TEX::COLLECTIVE24), 0);
 	prog->SetUniformVec2("ScreenSize", glm::vec2(m_GraphicsSettings.Width, m_GraphicsSettings.Height));
 	static bool useAA = true;
 	prog->SetUniformBool("useAA", useAA);
@@ -255,5 +259,12 @@ void GraphicsEngine::DrawPostFX() {
 }
 
 void GraphicsEngine::DrawTransparent() {
-	m_TransparencyProgram->Render(m_RenderQueue, m_GBuffer);
+	m_TransparencyProgram->RenderToBuffer(m_RenderQueue, m_GBuffer);
+	m_ParticleSystem->Update(1.0f / 60.0f);
+	m_ParticleSystem->Render(m_RenderQueue);
+	m_TransparencyProgram->RenderToFrameBuffer();
+}
+
+void GraphicsEngine::GetParticleTimes(double& update, double& render) {
+	m_ParticleSystem->GetTimes(update, render);
 }

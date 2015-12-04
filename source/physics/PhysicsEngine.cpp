@@ -28,7 +28,7 @@ btRigidBody* PhysicsEngine::AddPhysicsObject(float mass, glm::vec3 pos, glm::vec
 	btDefaultMotionState* state = new btDefaultMotionState();
 	btTransform transform(btQuaternion(0, 0, 0, 1), btVector3(pos.x, pos.y, pos.z));
 	state->setWorldTransform(transform);
-	btRigidBody* body = new btRigidBody(mass,state, object);
+	btRigidBody* body = new btRigidBody(mass, state, object);
 	m_World->addRigidBody(body);
 	return body;
 }
@@ -38,6 +38,15 @@ void PhysicsEngine::Update(const float deltatime) {
 }
 
 void PhysicsEngine::Shutdown() {
+	for (int i = 0; i < m_World->getCollisionObjectArray().size(); ++i) {
+		btCollisionObject* obj = m_World->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState()){
+			delete body->getMotionState();
+		}
+		m_World->removeCollisionObject(obj);
+		delete obj;
+	}
 	if (m_World) delete m_World;
 	if (m_Solver) delete m_Solver;
 	if (m_PairCache) delete m_PairCache;

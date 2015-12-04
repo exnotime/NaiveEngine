@@ -9,7 +9,8 @@ namespace gfx {
 		TransparencyProgram();
 		~TransparencyProgram();
 		void Initialize(int width, int height);
-		void Render(RenderQueue const* rq, GBuffer const * gbuffer);
+		void RenderToBuffer(RenderQueue const* rq, GBuffer const * gbuffer);
+		void RenderToFrameBuffer();
 		GLuint GetFrameBuffer() const;
 	private:
 		unsigned int m_GeometryShader;

@@ -39,6 +39,10 @@ void gfx::RenderQueue::Enqueue(ModelHandle model, const ShaderInput& input) {
 }
 
 void gfx::RenderQueue::Enqueue(ModelHandle model, const std::vector<ShaderInput>& inputs, float transparency) {
+	if (transparency >= 1.0f) {
+		this->Enqueue(model, inputs);
+		return;
+	}
 	TransparentModelObject mo;
 	mo.Model = model;
 	mo.InstanceCount = (int)inputs.size();
@@ -48,6 +52,10 @@ void gfx::RenderQueue::Enqueue(ModelHandle model, const std::vector<ShaderInput>
 }
 
 void gfx::RenderQueue::Enqueue(ModelHandle model, const ShaderInput& input, float transparency) {
+	if (transparency >= 1.0f) {
+		this->Enqueue(model, input);
+		return;
+	}
 	TransparentModelObject mo;
 	mo.Model = model;
 	mo.InstanceCount = 1;

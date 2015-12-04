@@ -43,12 +43,13 @@ void gfx::TransparencyProgram::Initialize(int width, int height){
 	g_BufferManager.BindBufferToProgram("LightBuffer", g_ShaderBank.GetProgramFromHandle(m_GeometryShader), 3);
 }
 
-void gfx::TransparencyProgram::Render(RenderQueue const * rq, GBuffer const * gbuffer){
+void gfx::TransparencyProgram::RenderToBuffer(RenderQueue const * rq, GBuffer const * gbuffer){
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_GeometryShader);
 	prog->Apply();
 	glDepthMask(GL_FALSE);
 	glEnable(GL_BLEND);
 	glDisable(GL_CULL_FACE);
+	//glCullFace(GL_NONE);
 	glBlendFunci(0, GL_ONE, GL_ONE);
 	glBlendFunci(1, GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 	glBindFramebuffer(GL_FRAMEBUFFER,m_FrameBuffer);
@@ -101,8 +102,11 @@ void gfx::TransparencyProgram::Render(RenderQueue const * rq, GBuffer const * gb
 			bufferOffset += instanceCount;
 		}
 	}
+}
 
-	prog = g_ShaderBank.GetProgramFromHandle(m_FinalShader);
+void gfx::TransparencyProgram::RenderToFrameBuffer()
+{
+	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_FinalShader);
 	prog->Apply();
 	prog->SetUniformTextureHandle("acumTexture", m_AcumTexture, 0);
 	prog->SetUniformTextureHandle("revealageTexture", m_RevealageTexture, 1);

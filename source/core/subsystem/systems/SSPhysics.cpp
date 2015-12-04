@@ -40,4 +40,5 @@ void SSPhysics::Update(const float deltaTime) {
 }
 
 void SSPhysics::Shutdown() {
+	g_PhysicsEngine.Shutdown();
 }

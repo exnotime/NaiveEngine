@@ -23,6 +23,7 @@ void gfx::BloomProgram::Initialize(){
 
 	m_BlurProgram = new BlurProgram();
 	m_BlurProgram->Initlialize();
+	m_BlurProgram->SetTargetTexture(m_BloomTexture, 1.0f);
 }
 
 void gfx::BloomProgram::Render(){
@@ -45,6 +46,7 @@ void gfx::BloomProgram::Render(){
 	prog->Apply();
 	prog->SetUniformTextureHandle("g_BluredBloomTex", m_BlurProgram->GetBluredTexture(), 1);
 	prog->SetUniformTextureHandle("g_ColorBuffer", m_TargetTex, 2);
+	prog->SetUniformFloat("g_BloomFactor", 0.25f);
 	prog->SetUniformVec2("g_ScreenSize", glm::vec2(m_Width, m_Height));
 	glBindImageTexture(0, m_BloomTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 	glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);

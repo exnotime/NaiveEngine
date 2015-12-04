@@ -4,6 +4,7 @@
 #include <gfx/Camera.h>
 #include <glm/gtx/transform.hpp>
 #include <gfx/LightEngine.h>
+#include <imgui/imgui.h>
 #include "../../datasystem/ComponentManager.h"
 #include "../../entity/EntityManager.h"
 #include "../../components/PlacementComponent.h"
@@ -23,8 +24,6 @@ void SSGraphics::Startup() {
 	gs.Height = 900;
 	m_GFXEngine->Initialize(gs);
 	m_RenderQueue = m_GFXEngine->GetRenderQueue();
-	m_Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
-	
 }
 
 void SSGraphics::Update(const float deltaTime) {
@@ -33,6 +32,8 @@ void SSGraphics::Update(const float deltaTime) {
 	g_ComponentManager.GetBuffer<gfx::Camera>(&camera);
 	gfx::View view;
 	view.camera = camera->GetData();
+	view.camera.Right = camera->GetRight();
+	view.camera.Up = camera->GetUp();
 	view.viewport.height = 900;
 	view.viewport.width = 1600;
 	view.viewport.x = 0;
@@ -50,7 +51,7 @@ void SSGraphics::Update(const float deltaTime) {
 
 			input.World = glm::translate(pc->Position) * glm::scale(pc->Scale) * glm::mat4_cast(pc->Orientation);
 			input.Color = mc->Color;
-			m_RenderQueue->Enqueue(mc->Model, input);
+			m_RenderQueue->Enqueue(mc->Model, input, mc->Color.a);
 		}
 	}
 
@@ -58,10 +59,22 @@ void SSGraphics::Update(const float deltaTime) {
 	dl.Color = glm::vec4(1);
 	dl.Direction = glm::vec3(0, -0.9f, 0.1f);
 	gfx::g_LightEngine.AddDirLightToQueue(dl);
-
+	gfx::Light pl;
+	pl.Color = glm::vec4(0,1,0,1);
+	pl.Intensity = 1.0f;
+	pl.Position = camera->GetPosition();
+	pl.Range = 1000.0f;
+	gfx::g_LightEngine.AddPointLightToQueue(pl);
 
 	m_GFXEngine->Draw();
 	m_RenderQueue->Clear();
+	double u, r;
+	m_GFXEngine->GetParticleTimes(u,r);
+
+	ImGui::Begin("Particles");
+	ImGui::Text("Update Time: %f", u);
+	ImGui::Text("Render Time: %f", r);
+	ImGui::End();
 
 }
 

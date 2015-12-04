@@ -109,7 +109,7 @@ void main()
 
 	ivec2 screenPos = ivec2(gScreenOffset) + ivec2(gl_GlobalInvocationID.xy);
 	vec2 uv = vec2(screenPos) / vec2(gScreenSize - 1);
-	
+
 	float depth = texelFetch(gDepthBuffer, screenPos.xy, 0).r * 2.0f - 1.0f;
 	float zNear = gProj[3][2] / (gProj[2][2] - 1.0f);
 	float zFar 	= gProj[3][2] / (gProj[2][2] + 1.0f);
@@ -204,9 +204,9 @@ void main()
 	vec2 roughnessMetal = texture(gRoughMetalBuffer,uv).xy;
 	roughnessMetal.x = roughnessMetal.x * roughnessMetal.x;
 
-	vec4 lightColor = vec4(0.0);
+	vec4 lightColor = vec4(0);
 	uint i;
-	float shadow =  1.0f;//ComputeShadow(posW.xyz);
+	float shadow = 1.0f;// ComputeShadow(posW.xyz);
 	for(i = 0; i < sPointLightCount; ++i){
 		Light p = lights[sPointLightIndex[i]];
 		lightColor += CalcPLight(p, normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y );
@@ -216,10 +216,11 @@ void main()
 		lightColor += CalcDLight(d, normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y ) * shadow;
 	}
 	//IBL
-	//lightColor += CalcIBLLight( normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y, g_SkyCubeTex, g_IrradianceCubeTex, g_BRDFTex) * (shadow + ( 1.0 - (shadow * 0.1)));
+	lightColor += CalcIBLLight( normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y, g_SkyCubeTex, g_IrradianceCubeTex, g_BRDFTex) * (shadow + ( 1.0 - (shadow * 0.1)));
+
 	float luma = dot( lightColor.rgb, vec3(0.299, 0.587, 0.114) );
-	vec4 outColor = vec4(Reinhard(lightColor.rgb), luma);
-	imageStore(output_img, screenPos, pow(outColor, vec4(1.0 / 2.2)));
-	
+	vec3 outColor = Uncharted2Tonemap(lightColor.rgb);
+	imageStore(output_img, screenPos, vec4(pow(outColor, vec3(1.0 / 2.2)),luma));
+
 }
 #end_shader

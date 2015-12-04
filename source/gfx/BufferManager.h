@@ -21,6 +21,7 @@ class BufferManager {
 	bool IsProgramBound(ShaderProgramHandle program, GLuint bindingpoint);
 	bool IsBufferBound(GLuint buffer, GLuint bindingpoint);
 	void ClearBuffers();
+	GLuint GetBuffer(const std::string& name);
   private:
 	BufferManager();
 	std::map<std::string, GLuint>							m_Buffers; //Name to buffers

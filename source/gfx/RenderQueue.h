@@ -1,5 +1,6 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glm/gtc/quaternion.hpp>
 #include <vector>
 #include "GFXLibraryDefine.h"
 namespace gfx {
@@ -27,7 +28,7 @@ struct CameraData {
 	glm::mat4 Proj = glm::mat4(1);
 	glm::mat4 ProjView = glm::mat4(1);
 	glm::vec3 Position = glm::vec3(0);
-
+	glm::quat Orientation = glm::quat(1,0,0,0);
 	glm::vec3 Forward = glm::vec3(0,0,-1);
 	glm::vec3 Right = glm::vec3(1,0,0);
 	glm::vec3 Up = glm::vec3(0,1,0);

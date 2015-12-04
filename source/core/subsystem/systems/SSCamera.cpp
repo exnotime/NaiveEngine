@@ -1,10 +1,9 @@
 #include "SSCamera.h"
 #include "../../datasystem/ComponentManager.h"
 #include "../../entity/EntityManager.h"
-#include <imgui/imgui.h>
 #include <gfx/Camera.h>
 #include "../../Input/Input.h"
-#define MOVE_SPEED 10.0f
+#define MOVE_SPEED 50.0f
 SSCamera::SSCamera() {
 
 }
@@ -19,6 +18,7 @@ void SSCamera::Startup() {
 	//create a camera component
 	gfx::Camera cam;
 	g_ComponentManager.CreateComponent<gfx::Camera>(cam, entity, GET_TYPE_ID(gfx::Camera));
+
 }
 
 void SSCamera::Update(const float deltaTime) {

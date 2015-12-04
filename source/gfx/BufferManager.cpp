@@ -217,3 +217,10 @@ void gfx::BufferManager::ClearBuffers() {
 	m_Bindings.clear();
 	m_BufferTypes.clear();
 }
+
+GLuint gfx::BufferManager::GetBuffer(const std::string& name) {
+	auto it = m_Buffers.find(name);
+	if (it == m_Buffers.end())
+		return 0;
+	return it->second;
+}

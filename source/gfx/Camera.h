@@ -11,10 +11,6 @@
 #ifndef GLM_FORCE_RADIANS
 #define GLM_FORCE_RADIANS	// Needs to be included before any GLM stuff is loaded.
 #endif
-
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include "RenderQueue.h"
 #include "GFXLibraryDefine.h"
 namespace gfx {
@@ -101,6 +97,5 @@ class GFX_API Camera {
 
   private:
 	  CameraData m_CamData;
-	  glm::quat m_Orientation;
 };
 }

@@ -85,8 +85,8 @@ vec3 CalcBumpedNormal(vec3 Normal, vec3 Tangent, sampler2D normalMap, vec2 uv){
 
 void main(){
 	
-	float roughness = texture(g_RoughnessTex,v_Out.TexCoord.xy).r;
-	float metallic =  texture(g_MetallicTex, v_Out.TexCoord.xy).r;
+	float roughness = pow(texture(g_RoughnessTex,v_Out.TexCoord.xy).r, 2.2);
+	float metallic =  pow(texture(g_MetallicTex, v_Out.TexCoord.xy).r, 2.2);
 	const float minRoughness=1e-8;
 	roughness = max(minRoughness, roughness);
 
@@ -98,8 +98,8 @@ void main(){
 	vec3 baseColor = pow(albedo.xyz, vec3(2.2)) * v_Out.Color.xyz; //raise to 2.2(gamma) to be in linear space
 
 	FragmentNormal = normalize(normal);
-	FragmentColor.xyz = baseColor;
+	FragmentColor.xyz = pow(baseColor, vec3(1.0 / 2.2));
 	FragmentColor.a = 1; //do light calculation
-	FragmentRoughMetal = vec2(roughness, metallic);
+	FragmentRoughMetal = pow(vec2(roughness, metallic), vec2(1.0 / 2.2));
 }
 #end_shader

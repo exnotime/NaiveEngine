@@ -52,7 +52,7 @@ in struct {
 layout(binding=0) uniform 	sampler2D 	g_DiffuseTex;
 layout(binding=1) uniform 	sampler2D 	g_NormalTex;
 layout(binding=2) uniform 	sampler2D 	g_RoughnessTex;
-layout(binding=3) uniform 	sampler2D 	g_MetallicTex; 
+layout(binding=3) uniform 	sampler2D 	g_MetallicTex;
 layout(binding=4) uniform 	sampler2D 	g_DepthBuffer;
 
 layout(binding = 6) uniform samplerCube g_SkyCubeTex;
@@ -106,7 +106,7 @@ void main(){
 		float ndotl = saturate(dot(normal, normalize(d.Direction) * -1));
 		ndotl = ndotl * 0.5 + 0.5;
 		color.xyz *= ndotl;
-		//lightColor += CalcDLight(d, v_Out.NormalW.xyz, v_Out.PosW.xyz, g_CamPos.xyz, color.xyz, roughness, metal );
+		//color += CalcDLight(d, v_Out.NormalW.xyz, v_Out.PosW.xyz, g_CamPos.xyz, color.xyz, roughness, metal );
 	}
 	acum = vec4(color.xyz, alpha) * w(gl_FragCoord.z, alpha);
 	revealage = vec4(alpha);
