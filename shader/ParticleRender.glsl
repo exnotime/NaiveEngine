@@ -58,7 +58,7 @@ float w(float z, float alpha){
 }
 void main(){
 	vec4 color = texture(g_Texture, TexCoord);
-	float alpha = 0.7f * color.a;
+	float alpha = 0.5f * color.a;
 
 	acum = vec4(color.xyz, alpha) * w(gl_FragCoord.z, alpha);
 	revealage = vec4(alpha);

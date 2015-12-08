@@ -1,7 +1,7 @@
 #pragma once
 #include "RenderQueue.h"
 #include "ShaderProgram.h"
-#define PARTICLE_COUNT 10000
+#define PARTICLE_COUNT 16384 * 4
 #define RANDTEXSIZE 1024
 namespace gfx {
 	struct IndirectDrawCall {
@@ -27,6 +27,7 @@ namespace gfx {
 	private:
 		GLuint m_RandTex;
 		ShaderProgram* m_UpdateShader;
+		ShaderProgram* m_DrawShader;
 		ShaderProgram* m_RenderShader;
 		GLuint m_VertexArray;
 		GLuint m_IndirectBuffer;

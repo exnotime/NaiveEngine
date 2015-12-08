@@ -21,10 +21,11 @@ void SSPhysics::Update(const float deltaTime) {
 	g_PhysicsEngine.Update(deltaTime);
 	//get translation from the bullet rigid body
 
-	int flag = PlacementComponent::Flag | RigidBodyComponent::Flag;
+	unsigned int flags = PlacementComponent::Flag | RigidBodyComponent::Flag;
 
 	for (auto& entity : g_EntityManager.GetEntityList()) {
-		if (entity.ComponentBitfield & flag) {
+		unsigned g = flags & entity.ComponentBitfield;
+		if ((flags & entity.ComponentBitfield) == flags) {
 			PlacementComponent* pc = g_ComponentManager.GetComponent<PlacementComponent>(entity);
 			RigidBodyComponent* rbc = g_ComponentManager.GetComponent<RigidBodyComponent>(entity);
 

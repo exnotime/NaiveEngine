@@ -1,7 +1,7 @@
 #new_shader compute
 #version 440
-#define WORK_GROUP_SIZE 32
-layout(local_size_x = WORK_GROUP_SIZE, local_size_y = WORK_GROUP_SIZE) in;
+#define WORK_GROUP_SIZE 256
+layout(local_size_x = WORK_GROUP_SIZE) in;
 #pragma optionNV(fastmath on)
 #pragma optionNV(ifcvt none)
 #pragma optionNV(inline all)
@@ -12,12 +12,6 @@ struct Particle{
 	vec4 Position;
 	vec4 Velocity;
 };
-struct IndirectDrawCall {
-	uint VertexCount;
-	uint InstanceCount;
-	uint Offset;
-	uint ReservedMustBeZero;
-};
 
 uniform vec3 g_Position;
 uniform vec3 g_Size;
@@ -25,9 +19,10 @@ uniform sampler2D g_RandomTex;
 uniform float g_DeltaTime;
 uniform float g_Time;
 uniform uint g_RandOffset = 0;
+uniform uint g_Width;
 shared uint g_RandIndex = 0;
 #define RANDTEXSIZE 1024
-#define PARTICLE_COUNT 10000
+#define PARTICLE_COUNT 16384 * 4
 
 layout(std430, binding = 4) buffer ParticleBuffer{
 	Particle g_Particles[PARTICLE_COUNT];
@@ -37,11 +32,7 @@ layout(std430, binding = 5) buffer ParticleVertexBuffer{
 	Particle g_ParticleVertexBuffer[PARTICLE_COUNT];
 };
 
-layout(std430, binding = 6) buffer IndirectBuffer{
-	IndirectDrawCall g_DrawCall;
-};
-
-layout(binding = 7, offset = 0) uniform atomic_uint g_ParticleCounter;
+layout(binding = 6, offset = 0) uniform atomic_uint g_ParticleCounter;
 
 float Randf(){
 	float texcoord = float((atomicAdd(g_RandIndex,1) + g_RandOffset) % RANDTEXSIZE) / RANDTEXSIZE * cos(g_Time);
@@ -59,20 +50,14 @@ void SpawnParticle(uint i){
 }
 
 void main(){
-	uint index = gl_GlobalInvocationID.x;
-	if(g_Particles[index].Position.y < g_Position.y){
-		SpawnParticle(index);
+	uint i = gl_GlobalInvocationID.x;
+	if(g_Particles[i].Position.y < g_Position.y){
+		SpawnParticle(i);
 	}
-	g_Particles[index].Position += g_Particles[index].Velocity * g_DeltaTime;
-	g_ParticleVertexBuffer[index] = g_Particles[index];
-	//Check frustum
-	//write particle to vertex buffer
-	barrier();
-	if(index == 0){
-		g_DrawCall.InstanceCount = 1;
-		g_DrawCall.Offset = 0;
-		g_DrawCall.VertexCount = PARTICLE_COUNT;
-		g_DrawCall.ReservedMustBeZero = 0;
+	g_Particles[i].Position += g_Particles[i].Velocity * g_DeltaTime;
+	if(g_Particles[i].Position.z > 0){
+		uint index = atomicCounterIncrement(g_ParticleCounter);
+		g_ParticleVertexBuffer[index] = g_Particles[i];
 	}
 }
 #end_shader

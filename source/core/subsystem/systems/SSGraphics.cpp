@@ -45,7 +45,7 @@ void SSGraphics::Update(const float deltaTime) {
 	int flag = PlacementComponent::Flag | ModelComponent::Flag;
 
 	for (auto& entity : g_EntityManager.GetEntityList()){
-		if (entity.ComponentBitfield & flag) {
+		if ((flag & entity.ComponentBitfield) == flag) {
 			PlacementComponent* pc = g_ComponentManager.GetComponent<PlacementComponent>(entity);
 			ModelComponent* mc = g_ComponentManager.GetComponent<ModelComponent>(entity);
 
