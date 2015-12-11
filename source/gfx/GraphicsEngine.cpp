@@ -260,7 +260,7 @@ void GraphicsEngine::DrawPostFX() {
 
 void GraphicsEngine::DrawTransparent() {
 	m_TransparencyProgram->RenderToBuffer(m_RenderQueue, m_GBuffer);
-	m_ParticleSystem->Update(1.0f / 60.0f);
+	m_ParticleSystem->Update(1.0f / 60.0f, m_RenderQueue);
 	m_ParticleSystem->Render(m_RenderQueue);
 	m_TransparencyProgram->RenderToFrameBuffer();
 }

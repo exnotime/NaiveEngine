@@ -17,7 +17,7 @@ out vec2 TexCoord;
 uniform mat4 g_ViewProj;
 uniform vec3 g_CamRight;
 uniform vec3 g_CamUP;
-#define PARTICLE_SIZE 0.2
+#define PARTICLE_SIZE 0.5
 
 void main(){
 	vec4 pos = vec4(Position[0].xyz - (g_CamRight + g_CamUP) * PARTICLE_SIZE,1);

@@ -1,8 +1,9 @@
 #pragma once
 #include "RenderQueue.h"
 #include "ShaderProgram.h"
-#define PARTICLE_COUNT 16384 * 4
-#define RANDTEXSIZE 1024
+#include "Camera.h"
+#define PARTICLE_COUNT 16384
+#define RANDTEXSIZE 4096
 namespace gfx {
 	struct IndirectDrawCall {
 		GLuint VertexCount;
@@ -21,19 +22,18 @@ namespace gfx {
 		ParticleSystem();
 		~ParticleSystem();
 		void Init();
-		void Update(float deltatime);
+		void Update(float deltatime, RenderQueue* rq);
 		void Render(RenderQueue* rq);
 		void GetTimes(double& update, double& render);
 	private:
 		GLuint m_RandTex;
 		ShaderProgram* m_UpdateShader;
-		ShaderProgram* m_DrawShader;
 		ShaderProgram* m_RenderShader;
 		GLuint m_VertexArray;
 		GLuint m_IndirectBuffer;
 		GLuint m_AtomicBuffer;
 		Texture* m_ParticleTexture;
-
+		Camera* m_Camera;
 		float m_Time = 0;
 		double m_UpdateTime, m_RenderTime;
 	};
