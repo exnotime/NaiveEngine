@@ -98,7 +98,6 @@ void gfx::BufferManager::BindBufferWithRange(const std::string& name, ShaderProg
 		//Logger::Log("Buffer name is not in the manager", "BufferManager", LogSeverity::WARNING_MSG);
 		return;
 	}
-
 	GLuint buffer = it->second;
 	GLenum type = m_BufferTypes[buffer];
 
@@ -126,7 +125,6 @@ void gfx::BufferManager::BindBufferWithRange(const std::string& name, ShaderProg
 		return;
 	}
 	//update binding index
-
 	m_ProgramBindings[program->GetHandle()].push_back(bindingpoint);
 	m_Bindings[buffer]			= bindingpoint;
 	glBindBuffer(type, 0);

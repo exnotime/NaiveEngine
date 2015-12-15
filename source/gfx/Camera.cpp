@@ -53,6 +53,11 @@ void gfx::Camera::RotateWithQuaternion(const glm::quat& rotation) {
 	m_CamData.Orientation = glm::normalize( rotation * m_CamData.Orientation);
 }
 
+void gfx::Camera::LookAt(const glm::vec3& position) {
+	 glm::mat4 v = glm::lookAt(m_CamData.Position, position, this->GetUp());
+	m_CamData.Orientation = glm::quat_cast(v);
+}
+
 const glm::vec3 gfx::Camera::GetForward() const {
 	return m_CamData.Orientation * m_CamData.Forward;
 }

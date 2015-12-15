@@ -5,6 +5,7 @@
 #include <glm/gtx/transform.hpp>
 #include <gfx/LightEngine.h>
 #include <imgui/imgui.h>
+#include "../../Input/Input.h"
 #include "../../datasystem/ComponentManager.h"
 #include "../../entity/EntityManager.h"
 #include "../../components/PlacementComponent.h"
@@ -74,6 +75,9 @@ void SSGraphics::Update(const float deltaTime) {
 	ImGui::Begin("Particles");
 	ImGui::Text("Update Time: %f", u);
 	ImGui::Text("Render Time: %f", r);
+	if (g_Input.IsKeyPushed(GLFW_KEY_T)) {
+		m_GFXEngine->ToogleParticleCulling();
+	}
 	ImGui::End();
 
 }

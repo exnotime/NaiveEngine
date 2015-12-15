@@ -113,6 +113,7 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	m_SkyProgram->Init();
 	m_SkyProgram->SetSkyTexture("asset/sky/skybox.dds");
 	//Particles
+	printf("size of particle system %d\n", sizeof(ParticleSystem));
 	m_ParticleSystem = new ParticleSystem();
 	m_ParticleSystem->Init();
 }
@@ -261,10 +262,14 @@ void GraphicsEngine::DrawPostFX() {
 void GraphicsEngine::DrawTransparent() {
 	m_TransparencyProgram->RenderToBuffer(m_RenderQueue, m_GBuffer);
 	m_ParticleSystem->Update(1.0f / 60.0f, m_RenderQueue);
-	m_ParticleSystem->Render(m_RenderQueue);
+	m_ParticleSystem->Render(m_RenderQueue, m_GBuffer);
 	m_TransparencyProgram->RenderToFrameBuffer();
 }
 
 void GraphicsEngine::GetParticleTimes(double& update, double& render) {
 	m_ParticleSystem->GetTimes(update, render);
+}
+
+void GraphicsEngine::ToogleParticleCulling() {
+	m_ParticleSystem->ToogleCulling();
 }

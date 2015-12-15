@@ -50,6 +50,8 @@ in vec2 TexCoord;
 uniform float g_ZNear;
 uniform float g_ZFar;
 uniform sampler2D g_Texture;
+uniform sampler2D g_DepthBuffer;
+
 float d(float z){
 	return ((g_ZNear * g_ZFar) / (z - g_ZFar)) / (g_ZNear - g_ZFar);
 }
@@ -57,6 +59,9 @@ float w(float z, float alpha){
 	return alpha * max(0.01, 3 * 1000 * pow((1.0 - d(z)), 3) );
 }
 void main(){
+	if(gl_FragCoord.z > texelFetch(g_DepthBuffer, ivec2(gl_FragCoord.xy), 0).r){
+		discard;
+	}
 	vec4 color = texture(g_Texture, TexCoord);
 	float alpha = 0.5f * color.a;
 

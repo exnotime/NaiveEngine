@@ -69,6 +69,8 @@ class GFX_API Camera {
 	// Provides full control of rotation. Only use if yaw, pitch, roll or rotate around axis isn't enough for your situation.
 	void					RotateWithQuaternion(const glm::quat& rotation);
 
+	void					LookAt(const glm::vec3& position);
+
 	// Camera basevector given in world space coordninates. WARNING: Does calculations. Call as few times as possible.
 	const glm::vec3			GetForward() const;
 
@@ -93,7 +95,7 @@ class GFX_API Camera {
 
 	void					SetPosition(const glm::vec3& newPosition);
 	void					SetOrientation(const glm::quat& newOrientation);
-	virtual void	SetMoveSpeed(const float newMoveSpeed);
+	virtual void			SetMoveSpeed(const float newMoveSpeed);
 
   private:
 	  CameraData m_CamData;

@@ -31,8 +31,9 @@ class GraphicsEngine {
 	GFX_API void Initialize(const GraphicsSettings& settings);
 	GFX_API void Deinitialize( );
 	GFX_API void Draw();
-	GFX_API void GetParticleTimes(double& update, double& render); //temp remove soon
 
+	GFX_API void GetParticleTimes(double& update, double& render); //temp remove soon
+	GFX_API void ToogleParticleCulling(); //temp remove soon
 	RenderQueue* GetRenderQueue() {
 		return m_RenderQueue;
 	}

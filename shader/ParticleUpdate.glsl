@@ -20,17 +20,16 @@ uniform float g_DeltaTime;
 uniform float g_Time;
 uniform mat4 g_View;
 uniform uint g_RandOffset = 0;
-uniform uint g_Width;
 shared uint g_RandIndex = 0;
 #define RANDTEXSIZE 4096
-#define PARTICLE_COUNT 16384
+#define PARTICLE_COUNT 65536
 
 layout(std430, binding = 4) buffer ParticleBuffer{
-	Particle g_Particles[PARTICLE_COUNT];
+	Particle g_Particles[];
 };
 
 layout(std430, binding = 5) buffer ParticleVertexBuffer{
-	Particle g_ParticleVertexBuffer[PARTICLE_COUNT];
+	vec4 g_ParticleVertexBuffer[];
 };
 
 layout(binding = 6, offset = 0) uniform atomic_uint g_ParticleCounter;
@@ -41,7 +40,7 @@ layout(std140, binding = 7) uniform ViewPlaneBuffer{
 
 bool FrustumCheck(vec4 pos){
 	for(int i = 0; i < 6; ++i){
-		if(dot(pos, g_Planes[i]) < 0){
+		if(dot(pos, g_Planes[i]) < 0 ){
 			return false;
 		}
 	}
@@ -49,7 +48,7 @@ bool FrustumCheck(vec4 pos){
 }
 
 float Randf(){
-	float texcoord = float((atomicAdd(g_RandIndex,1) + g_RandOffset) % RANDTEXSIZE) / RANDTEXSIZE * cos(g_Time);
+	float texcoord = float((atomicAdd(g_RandIndex, 1) + g_RandOffset) % RANDTEXSIZE) / RANDTEXSIZE * cos(g_Time);
 	return texture(g_RandomTex, vec2(texcoord,0)).x;
 }
 
@@ -70,11 +69,12 @@ void main(){
 	}
 	g_Particles[i].Position += g_Particles[i].Velocity * g_DeltaTime;
 	//transform to hdc space
-	vec4 viewPos = g_View * g_Particles[i].Position;
-	viewPos.xyz /= viewPos.w;
+	vec4 viewPos = g_Particles[i].Position;
+	//viewPos = g_View * viewPos;
+	//viewPos /= viewPos.w;
 	if(FrustumCheck(viewPos)){
 		uint index = atomicCounterIncrement(g_ParticleCounter);
-		g_ParticleVertexBuffer[index] = g_Particles[i];
+		g_ParticleVertexBuffer[index] = g_Particles[i].Position;
 	}
 }
 #end_shader
