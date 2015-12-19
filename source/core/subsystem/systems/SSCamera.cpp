@@ -3,7 +3,7 @@
 #include "../../entity/EntityManager.h"
 #include <gfx/Camera.h>
 #include "../../Input/Input.h"
-#define MOVE_SPEED 50.0f
+#define MOVE_SPEED 25.0f
 SSCamera::SSCamera() {
 
 }
@@ -17,7 +17,7 @@ void SSCamera::Startup() {
 	Entity& entity = g_EntityManager.CreateEntity();
 	//create a camera component
 	gfx::Camera cam;
-	cam.SetPosition(glm::vec3(30, 10, 30));
+	cam.SetPosition(glm::vec3(40, 10, 40));
 	g_ComponentManager.CreateComponent<gfx::Camera>(cam, entity, GET_TYPE_ID(gfx::Camera));
 
 }
@@ -27,10 +27,10 @@ void SSCamera::Update(const float deltaTime) {
 	for (int comp = 0; comp < g_ComponentManager.GetBuffer<gfx::Camera>(&camera); comp++) {
 		static float time = 0;
 		time += deltaTime;
-		if (time < 4.0f) {
+		if (time < 8.0f) {
 			camera->MoveRelative(glm::vec3(-1, 0, 0) * deltaTime * MOVE_SPEED);
 		}
-		else if (time >= 4.0f && time < 12.0f) {
+		else if (time >= 8.0f && time < 24.0f) {
 			camera->MoveRelative(glm::vec3(1, 0, 0) * deltaTime * MOVE_SPEED);
 		}
 		else {

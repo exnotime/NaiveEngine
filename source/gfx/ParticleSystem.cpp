@@ -18,7 +18,7 @@ ParticleSystem::~ParticleSystem() {
 }
 
 void ParticleSystem::Init() {
-	m_UseCulling = false;
+	m_UseCulling = true;
 	//compile shaders
 	m_UpdateShader = new ShaderProgram();
 	m_UpdateShader->LoadCompleteShaderProgramFromFile("shader/ParticleUpdate.glsl", true);
@@ -165,7 +165,7 @@ void ParticleSystem::Render(RenderQueue* rq,GBuffer* gbuffer) {
 	m_RenderTimes.push_back(m_RenderTime);
 
 	m_TestCounter++;
-	if (m_TestCounter >= 60) {
+	if (m_TestCounter >= 20) {
 		SaveTest(m_UseCulling);
 		m_TestCounter = 0;
 	}
