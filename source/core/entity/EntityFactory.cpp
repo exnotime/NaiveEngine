@@ -14,14 +14,14 @@ void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) 
 	PlacementComponent pc;
 	pc.Position = position;
 	pc.Scale = size;
-	g_ComponentManager.CreateComponent<PlacementComponent>(pc, entity, GET_TYPE_ID(PlacementComponent));
+	g_ComponentManager.CreateComponent(&pc, entity, PlacementComponent::Flag);
 	//set up model component
 	ModelComponent mc;
 	mc.Color = color;
 	mc.Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
-	g_ComponentManager.CreateComponent<ModelComponent>(mc, entity, GET_TYPE_ID(ModelComponent));
+	g_ComponentManager.CreateComponent(&mc, entity, ModelComponent::Flag);
 	//set up rigid body
 	RigidBodyComponent rbc;
 	rbc.Body = g_PhysicsEngine.AddPhysicsObject(mass, pc.Position, pc.Scale);
-	g_ComponentManager.CreateComponent<RigidBodyComponent>(rbc, entity, GET_TYPE_ID(RigidBodyComponent));
+	g_ComponentManager.CreateComponent(&rbc, entity, RigidBodyComponent::Flag);
 }

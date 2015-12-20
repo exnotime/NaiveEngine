@@ -10,7 +10,7 @@ SSPhysics::SSPhysics() {
 }
 
 SSPhysics::~SSPhysics() {
-
+	
 }
 
 void SSPhysics::Startup() {
@@ -20,13 +20,12 @@ void SSPhysics::Startup() {
 void SSPhysics::Update(const float deltaTime) {
 	g_PhysicsEngine.Update(deltaTime);
 	//get translation from the bullet rigid body
-
 	int flag = PlacementComponent::Flag | RigidBodyComponent::Flag;
 
 	for (auto& entity : g_EntityManager.GetEntityList()) {
-		if (entity.ComponentBitfield & flag) {
-			PlacementComponent* pc = g_ComponentManager.GetComponent<PlacementComponent>(entity);
-			RigidBodyComponent* rbc = g_ComponentManager.GetComponent<RigidBodyComponent>(entity);
+		if ((entity.ComponentBitfield & flag) == flag) {
+			PlacementComponent* pc = (PlacementComponent*)g_ComponentManager.GetComponent(entity, PlacementComponent::Flag);
+			RigidBodyComponent* rbc = (RigidBodyComponent*)g_ComponentManager.GetComponent(entity, RigidBodyComponent::Flag);
 
 			if (rbc->Body->isActive()) {
 				btTransform transform;
@@ -40,4 +39,5 @@ void SSPhysics::Update(const float deltaTime) {
 }
 
 void SSPhysics::Shutdown() {
+	g_PhysicsEngine.Shutdown();
 }

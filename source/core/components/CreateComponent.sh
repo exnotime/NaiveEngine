@@ -6,7 +6,6 @@ struct $1 {
 "
 
 BODY="#include \"$1.h\"
-
 unsigned int $1::Flag = 0;
 "
 echo "$HEADER" > "$1.h"

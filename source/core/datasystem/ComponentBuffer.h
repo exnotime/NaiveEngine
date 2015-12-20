@@ -16,11 +16,11 @@ public:
 
 	}
 
-	template<typename component>
-	void CreateBuffer(uint size) {
-		m_Buffer = (Byte*)malloc(sizeof(component) * size);
+	void CreateBuffer(uint count, uint size) {
+		m_Buffer = (Byte*)malloc(count * size);
 		assert(m_Buffer != nullptr);
-		m_Size = size;
+		m_Size = count;
+		m_ComponentSize = size;
 	}
 	void ResizeBuffer(uint newSize) {
 		m_Buffer = (Byte*)realloc(m_Buffer, newSize);
@@ -31,20 +31,17 @@ public:
 	void DestroyBuffer() {
 		if (m_Buffer) free(m_Buffer);
 	}
-
-	template<typename component>
-	uint AddComponent(const component& comp) {
+	//makes a copy of the content at component
+	uint AddComponent(const void* component) {
 		if (m_End == m_Size)
-			ResizeBuffer(sizeof(component) * m_Size * 2);
-
+			ResizeBuffer(m_ComponentSize * m_Size * 2);
 		uint index = m_End;
-		static_cast<component*>(m_Buffer)[index] = comp;
+		memcpy((unsigned char*)(m_Buffer) + index * m_ComponentSize, component, m_ComponentSize);
 		m_End++;
 		m_Handles.push_back(index);
-
 		return m_Handles.size() - 1;
 	}
-	template<typename component>
+
 	void RemoveComponent(uint index) {
 		if (m_Handles[index] > m_End) {
 			return;
@@ -52,18 +49,19 @@ public:
 			m_End--;
 		} else {
 			index = m_Handles[index];
-			(component*)(m_Buffer)[index] = (component*)(m_Buffer)[m_End]; //move end to new position
-			m_Handles[m_End] = index;
-			m_End--;
+			//move end to new position
+			memcpy((unsigned char*)m_Buffer + index * m_ComponentSize, (unsigned char*)m_Buffer + m_End * m_ComponentSize, m_ComponentSize);
+			m_Handles[m_End] = index; //update handles
+			m_End--; //shorten end
 		}
 
 	}
 
-	template <typename component>
-	component* GetComponent(int index) {
+	void* GetComponent(int index) {
 		if (index >= m_Size)
 			return nullptr;
-		return &(static_cast<component*>(m_Buffer)[m_Handles[index]]);
+		uint i = m_Handles[index];
+		return (unsigned char*)(m_Buffer) + i * m_ComponentSize;
 	}
 	
 	void* GetComponentList() {
@@ -77,6 +75,7 @@ public:
 private:
 	uint m_Size = 0;
 	uint m_End = 0;
+	uint m_ComponentSize = 0;
 	void* m_Buffer = nullptr;
 	std::vector<uint> m_Handles;
 };

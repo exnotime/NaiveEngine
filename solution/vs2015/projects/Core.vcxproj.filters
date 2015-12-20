@@ -39,10 +39,10 @@
     <ClInclude Include="..\..\..\source\core\Window.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\components\CollisionComponent.h">
+    <ClInclude Include="..\..\..\source\core\components\CameraComponent.h">
       <Filter>core\components</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\components\ComponentTypes.h">
+    <ClInclude Include="..\..\..\source\core\components\CollisionComponent.h">
       <Filter>core\components</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\components\ModelComponent.h">
@@ -119,10 +119,10 @@
     <ClCompile Include="..\..\..\source\core\Window.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\components\CollisionComponent.cpp">
+    <ClCompile Include="..\..\..\source\core\components\CameraComponent.cpp">
       <Filter>core\components</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\components\ComponentTypes.cpp">
+    <ClCompile Include="..\..\..\source\core\components\CollisionComponent.cpp">
       <Filter>core\components</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\components\ModelComponent.cpp">

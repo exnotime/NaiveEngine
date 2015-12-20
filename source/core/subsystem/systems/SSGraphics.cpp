@@ -1,13 +1,13 @@
 #include "SSGraphics.h"
 #include <gfx/GraphicsEngine.h>
 #include <gfx/ModelBank.h>
-#include <gfx/Camera.h>
 #include <glm/gtx/transform.hpp>
 #include <gfx/LightEngine.h>
 #include "../../datasystem/ComponentManager.h"
 #include "../../entity/EntityManager.h"
 #include "../../components/PlacementComponent.h"
 #include "../../components/ModelComponent.h"
+#include "../../components/CameraComponent.h"
 SSGraphics::SSGraphics() {
 
 }
@@ -29,10 +29,10 @@ void SSGraphics::Startup() {
 
 void SSGraphics::Update(const float deltaTime) {
 	gfx::g_ModelBank.BuildBuffers();
-	gfx::Camera* camera;
-	g_ComponentManager.GetBuffer<gfx::Camera>(&camera);
+	CameraComponent* camera;
+	g_ComponentManager.GetBuffer((void**)&camera, CameraComponent::Flag);
 	gfx::View view;
-	view.camera = camera->GetData();
+	view.camera = camera->Camera.GetData();
 	view.viewport.height = 900;
 	view.viewport.width = 1600;
 	view.viewport.x = 0;
@@ -44,9 +44,9 @@ void SSGraphics::Update(const float deltaTime) {
 	int flag = PlacementComponent::Flag | ModelComponent::Flag;
 
 	for (auto& entity : g_EntityManager.GetEntityList()){
-		if (entity.ComponentBitfield & flag) {
-			PlacementComponent* pc = g_ComponentManager.GetComponent<PlacementComponent>(entity);
-			ModelComponent* mc = g_ComponentManager.GetComponent<ModelComponent>(entity);
+		if ((entity.ComponentBitfield & flag) == flag) {
+			PlacementComponent* pc = (PlacementComponent*)g_ComponentManager.GetComponent(entity, PlacementComponent::Flag);
+			ModelComponent* mc = (ModelComponent*)g_ComponentManager.GetComponent(entity, ModelComponent::Flag);
 
 			input.World = glm::translate(pc->Position) * glm::scale(pc->Scale) * glm::mat4_cast(pc->Orientation);
 			input.Color = mc->Color;

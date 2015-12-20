@@ -1,2 +1,2 @@
 #include "CollisionComponent.h"
-unsigned int CollisionComponent::Flag = 0;
+unsigned int CollisionComponent::Flag = 1 << 1;

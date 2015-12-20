@@ -1,3 +1,2 @@
 #include "RigidBodyComponent.h"
-
-unsigned int RigidBodyComponent::Flag = 0;
+unsigned int RigidBodyComponent::Flag = 1 << 4;

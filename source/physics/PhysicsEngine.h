@@ -16,7 +16,7 @@ public:
 private:
 	PhysicsEngine();
 
-	std::vector<btRigidBody*> m_PhysicsObjects;
+	std::vector<btCollisionShape*> m_PhysicsObjects;
 
 	btDefaultCollisionConfiguration* m_CollisionConfig = nullptr;
 	btCollisionDispatcher* m_Dispatcher = nullptr;
