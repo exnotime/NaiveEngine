@@ -22,6 +22,7 @@ class ModelBank {
 	GFX_API const Model& FetchModel(ModelHandle handle);
 	GFX_API ModelHandle LoadModel(const char* filename);
 	GFX_API ModelHandle AddModel(Model& TheModel);
+	GFX_API ModelHandle CreateCustomModel(std::vector<VertexPosNormalTexTangent>* vertices, std::vector<GLuint>* indices);
 	GFX_API void UpdateModel(ModelHandle& handle, Model& model);
 	GFX_API void BuildBuffers();
 	GFX_API void DeleteModel();

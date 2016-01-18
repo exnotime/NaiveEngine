@@ -56,7 +56,7 @@ void SSGraphics::Update(const float deltaTime) {
 
 	gfx::Light dl;
 	dl.Color = glm::vec4(1);
-	dl.Direction = glm::vec3(0, -0.9f, 0.1f);
+	dl.Direction = glm::vec3(0, -0.9f, 0.5f);
 	gfx::g_LightEngine.AddDirLightToQueue(dl);
 
 

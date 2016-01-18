@@ -10,7 +10,7 @@ struct Mesh {
 	unsigned int IndexBufferOffset;
 	int Indices;
 	int Size;
-	unsigned int Material;
+	unsigned int Material = 0;
 };
 
 struct Model {

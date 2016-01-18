@@ -4,7 +4,7 @@
 #include "core/components/PlacementComponent.h"
 #include "core/components/ModelComponent.h"
 #include "core/components/RigidBodyComponent.h"
-#include <gfx/ModelBank.h>
+#include <gfx/ShapeGenerator.h>
 #include <physics/PhysicsEngine.h>
 
 void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) {
@@ -18,7 +18,7 @@ void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) 
 	//set up model component
 	ModelComponent mc;
 	mc.Color = color;
-	mc.Model = gfx::g_ModelBank.LoadModel("asset/model/sphere.dae");
+	mc.Model = gfx::g_ShapeGenerator.GenerateModel(BASIC_SHAPE::CUBE);
 	g_ComponentManager.CreateComponent(&mc, entity, ModelComponent::Flag);
 	//set up rigid body
 	RigidBodyComponent rbc;

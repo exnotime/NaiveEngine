@@ -34,6 +34,7 @@ class MaterialBank {
 	TextureHandle						m_DefaultNormal;
 	TextureHandle						m_DefaultRoughness;
 	TextureHandle						m_DefaultMetal;
+	Material*							m_DefaultMaterial;
 
 };
 }

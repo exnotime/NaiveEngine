@@ -119,6 +119,7 @@
     <ClInclude Include="..\..\..\source\gfx\ShaderProgram.h" />
     <ClInclude Include="..\..\..\source\gfx\ShaderProgramBinary.h" />
     <ClInclude Include="..\..\..\source\gfx\ShadowMap.h" />
+    <ClInclude Include="..\..\..\source\gfx\ShapeGenerator.h" />
     <ClInclude Include="..\..\..\source\gfx\SkyProgram.h" />
     <ClInclude Include="..\..\..\source\gfx\Terrain.h" />
     <ClInclude Include="..\..\..\source\gfx\TerrainDeformationProgram.h" />
@@ -128,6 +129,7 @@
     <ClInclude Include="..\..\..\source\gfx\Vertex.h" />
     <ClInclude Include="..\..\..\source\gfx\VertexBuffer.h" />
     <ClInclude Include="..\..\..\source\gfx\gfxutility.h" />
+    <ClInclude Include="..\..\..\source\gfx\par_shapes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\gfx\BloomProgram.cpp" />
@@ -149,6 +151,7 @@
     <ClCompile Include="..\..\..\source\gfx\ShaderDefineContainer.cpp" />
     <ClCompile Include="..\..\..\source\gfx\ShaderProgram.cpp" />
     <ClCompile Include="..\..\..\source\gfx\ShadowMap.cpp" />
+    <ClCompile Include="..\..\..\source\gfx\ShapeGenerator.cpp" />
     <ClCompile Include="..\..\..\source\gfx\SkyProgram.cpp" />
     <ClCompile Include="..\..\..\source\gfx\Terrain.cpp" />
     <ClCompile Include="..\..\..\source\gfx\TerrainDeformationProgram.cpp" />

@@ -99,6 +99,29 @@ gfx::ModelHandle gfx::ModelBank::AddModel( Model& TheModel ) {
 	return id;
 }
 
+gfx::ModelHandle gfx::ModelBank::CreateCustomModel( std::vector<VertexPosNormalTexTangent>* vertices, std::vector<GLuint>* indices) {
+	ModelHandle id = ++m_Numerator;
+	Model model;
+	Mesh mesh;
+	mesh.Indices = indices->size();
+	mesh.Size = vertices->size();
+	mesh.Material = 0;
+	mesh.IndexBufferOffset = 0;
+	mesh.VertexBufferOffset = 0;
+	model.Meshes.push_back(mesh);
+	model.MaterialOffset = 0; //make sure there is a default material loaded
+	model.VertexHandle = (int)m_Vertices.size();
+	model.Loaded = true;
+	//copy and offset indices
+	for (unsigned int i = 0; i < indices->size(); ++i) {
+		m_Indices.push_back(model.VertexHandle + indices->at(i));
+	}
+	//copy vertices
+	m_Vertices.insert(m_Vertices.end(), vertices->begin(), vertices->end());
+	m_Models[id] = model;
+	return id;
+}
+
 void gfx::ModelBank::DeleteModel( ) {
 	//TODOHJ: Delete model data ,vertices and indices.
 	//then update all the other models after it in the memory.

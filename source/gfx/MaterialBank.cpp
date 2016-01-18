@@ -21,18 +21,19 @@ void gfx::MaterialBank::Initialize(){
 	m_DefaultRoughness = LoadTexture("asset/texture/roughness.png", TEXTURE_GREYSCALE);
 	m_DefaultMetal = LoadTexture("asset/texture/metal.png", TEXTURE_GREYSCALE);
 
-
+	m_DefaultMaterial = new Material();
+	m_DefaultMaterial->SetAlbedoTexture(m_DefaultAlbedo);
+	m_DefaultMaterial->SetNormalTexture(m_DefaultNormal);
+	m_DefaultMaterial->SetRoughnessTexture(m_DefaultRoughness);
+	m_DefaultMaterial->SetMetalTexture(m_DefaultMetal);
+	m_Materials.push_back(m_DefaultMaterial);
 }
 void gfx::MaterialBank::LoadMaterials(Model& model, std::string filename, const aiScene* scene) {
-	model.MaterialOffset = (unsigned int)m_Materials.size();
 	if (scene->mNumMaterials == 0) {
-		Material* defaultMat = new Material();
-		defaultMat->SetAlbedoTexture(m_DefaultAlbedo);
-		defaultMat->SetNormalTexture(m_DefaultNormal);
-		defaultMat->SetRoughnessTexture(m_DefaultRoughness);
-		defaultMat->SetMetalTexture(m_DefaultMetal);
-		m_Materials.push_back(defaultMat);
+		model.MaterialOffset = 0;
+		return;
 	}
+	model.MaterialOffset = (unsigned int)m_Materials.size();
 	for (unsigned int i = 0; i < scene->mNumMaterials; i++) {
 		Material* modelMat = new Material();
 		const aiMaterial* mat = scene->mMaterials[i];
