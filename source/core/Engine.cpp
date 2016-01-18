@@ -11,6 +11,7 @@
 #include "Input/Input.h"
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw_gl3.h"
+#include <time.h>
 
 using namespace core;
 Engine::Engine() {
@@ -25,6 +26,7 @@ Engine::~Engine() {
 }
 
 void Engine::Init() {
+	srand(time(0));
 	//set up window
 	m_Window = new Window();
 	WindowSettings ws;

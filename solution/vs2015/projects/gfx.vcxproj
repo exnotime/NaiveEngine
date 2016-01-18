@@ -112,6 +112,7 @@
     <ClInclude Include="..\..\..\source\gfx\Model.h" />
     <ClInclude Include="..\..\..\source\gfx\ModelBank.h" />
     <ClInclude Include="..\..\..\source\gfx\RenderQueue.h" />
+    <ClInclude Include="..\..\..\source\gfx\SSAOProgram.h" />
     <ClInclude Include="..\..\..\source\gfx\Shader.h" />
     <ClInclude Include="..\..\..\source\gfx\ShaderBank.h" />
     <ClInclude Include="..\..\..\source\gfx\ShaderDefineContainer.h" />
@@ -142,6 +143,7 @@
     <ClCompile Include="..\..\..\source\gfx\MaterialBank.cpp" />
     <ClCompile Include="..\..\..\source\gfx\ModelBank.cpp" />
     <ClCompile Include="..\..\..\source\gfx\RenderQueue.cpp" />
+    <ClCompile Include="..\..\..\source\gfx\SSAOProgram.cpp" />
     <ClCompile Include="..\..\..\source\gfx\Shader.cpp" />
     <ClCompile Include="..\..\..\source\gfx\ShaderBank.cpp" />
     <ClCompile Include="..\..\..\source\gfx\ShaderDefineContainer.cpp" />

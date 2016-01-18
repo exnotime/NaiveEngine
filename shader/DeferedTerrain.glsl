@@ -118,7 +118,7 @@ void main(){
 	//normal calculation
 	const float tilesize = g_TileScale / (gl_TessLevelInner[0]);
 	const vec2 texelSize = vec2(tilesize) / g_Size; //vec2(textureSize(g_HeightMap, 0))
-	
+
 	NormalW.xyz = normalize(NormalW.xyz);
 
 	vec3 dx = PosW.xyz + vec3(tilesize, 0 ,0);
@@ -131,8 +131,8 @@ void main(){
 	PosW.xyz += NormalW.xyz * h * g_Scale;
 	NormalW.xyz = normalize(cross(dz - PosW.xyz, dx - PosW.xyz));
 	//find new tangent
-	vec3 c1 = cross(NormalW.xyz, vec3(0.0, 0.0, 1.0)); 
-	vec3 c2 = cross(NormalW.xyz, vec3(0.0, 1.0, 0.0)); 
+	vec3 c1 = cross(NormalW.xyz, vec3(0.0, 0.0, 1.0));
+	vec3 c2 = cross(NormalW.xyz, vec3(0.0, 1.0, 0.0));
 	if(length(c1) > length(c2)) {
 		TangentW.xyz = c1;
 	}else {
@@ -172,7 +172,7 @@ vec3 CalcBumpedNormal(vec3 Normal, vec3 Tangent, sampler2D normalMap, vec2 uv){
 	vec3 bitangent = cross(tangent,normal);
 
 	vec3 bump = texture(normalMap,uv).xyz;
-	bump = (bump * 2.0) - 1.0; 
+	bump = (bump * 2.0) - 1.0;
 
 	vec3 newNormal;
 	mat3 TBN = mat3(tangent,bitangent,normal);
@@ -194,7 +194,7 @@ void main(){
 		discard;
 	}
 	vec3 baseColor = pow(albedo.xyz, vec3(2.2)) * g_Color; //raise to 2.2(gamma) to be in linear space
-	FragmentNormal = normal;
+	FragmentNormal = normal * 0.5 + 0.5;
 	FragmentColor.xyz = baseColor;
 	FragmentColor.a = 1; //do light calculation
 	FragmentRoughMetal = vec2(roughness, metallic);

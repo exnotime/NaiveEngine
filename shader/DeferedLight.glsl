@@ -28,6 +28,7 @@ uniform vec2 gViewportSize;
 uniform mat4 gLightMatrix;
 
 layout(binding = 4) uniform sampler2D	g_BRDFTex;
+layout(binding = 8) uniform sampler2D	g_SSAOTex;
 layout(binding = 5) uniform sampler2DShadow g_ShadowMap;
 layout(binding = 6) uniform samplerCube g_SkyCubeTex;
 layout(binding = 7) uniform samplerCube g_IrradianceCubeTex;
@@ -92,7 +93,15 @@ vec3 Uncharted2Tonemap(vec3 x)
 
     return ((x*(A*x+C*B)+D*E)/(x*(A*x+B)+D*F))-E/F;
 }
-
+vec3 ACESFilm( vec3 x )
+{
+    float a = 2.51f;
+    float b = 0.03f;
+    float c = 2.43f;
+    float d = 0.59f;
+    float e = 0.14f;
+    return saturate((x*(a*x+b))/(x*(c*x+d)+e));
+}
 float RGBLuma(vec3 rgb){
 	return 0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b;
 }
@@ -109,8 +118,8 @@ void main()
 
 	ivec2 screenPos = ivec2(gScreenOffset) + ivec2(gl_GlobalInvocationID.xy);
 	vec2 uv = vec2(screenPos) / vec2(gScreenSize - 1);
-	
-	float depth = texelFetch(gDepthBuffer, screenPos.xy, 0).r * 2.0f - 1.0f;
+
+	float depth = texelFetch(gDepthBuffer, screenPos.xy, 0).r;
 	float zNear = gProj[3][2] / (gProj[2][2] - 1.0f);
 	float zFar 	= gProj[3][2] / (gProj[2][2] + 1.0f);
 	float clipDelta = zFar - zNear;
@@ -199,11 +208,11 @@ void main()
 		return;
 	}
 
-	vec3 normal = texture(gNormalBuffer, uv).xyz;
+	vec3 normal = texelFetch(gNormalBuffer, screenPos, 0).xyz * 2 - 1;
 	normal = normalize(normal);
-	vec2 roughnessMetal = texture(gRoughMetalBuffer,uv).xy;
+	vec2 roughnessMetal = texelFetch(gRoughMetalBuffer, screenPos, 0).xy;
 	roughnessMetal.x = roughnessMetal.x * roughnessMetal.x;
-
+	float AO = texture( g_SSAOTex, uv ).r;
 	vec4 lightColor = vec4(0.0);
 	uint i;
 	float shadow =  1.0f;//ComputeShadow(posW.xyz);
@@ -216,10 +225,11 @@ void main()
 		lightColor += CalcDLight(d, normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y ) * shadow;
 	}
 	//IBL
-	//lightColor += CalcIBLLight( normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y, g_SkyCubeTex, g_IrradianceCubeTex, g_BRDFTex) * (shadow + ( 1.0 - (shadow * 0.1)));
+	lightColor += CalcIBLLight( normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y, g_SkyCubeTex, g_IrradianceCubeTex, g_BRDFTex) * (shadow + ( 1.0 - (shadow * 0.1)));
+	lightColor *= AO;
 	float luma = dot( lightColor.rgb, vec3(0.299, 0.587, 0.114) );
 	vec4 outColor = vec4(Reinhard(lightColor.rgb), luma);
 	imageStore(output_img, screenPos, pow(outColor, vec4(1.0 / 2.2)));
-	
+
 }
 #end_shader

@@ -11,12 +11,13 @@ layout(local_size_x = 32, local_size_y = 32) in;
 
 uniform sampler2D 	g_BluredBloomTex;
 uniform	sampler2D	g_ColorBuffer;
+uniform float g_BloomAmount = 0.5;
 layout(rgba8, binding = 0) writeonly restrict uniform image2D output_img;
 uniform vec2 		g_ScreenSize;
 void main(){
 	ivec2 screenPos = ivec2(gl_GlobalInvocationID.xy);
 	vec2 uv = vec2(screenPos) / vec2(g_ScreenSize - 1);
-	vec4 outColor = texture(g_ColorBuffer, uv) + texture(g_BluredBloomTex, uv);
+	vec4 outColor = texture(g_ColorBuffer, uv) + texture(g_BluredBloomTex, uv) * g_BloomAmount;
 	imageStore(output_img, screenPos, outColor);
 }
 

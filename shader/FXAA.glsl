@@ -277,7 +277,7 @@ FxaaFloat FxaaLuma(FxaaFloat4 rgba) { return rgba.w; }
 	rcpFrame = 1 / screensize
 	subpix = 0 -> 1 : 0.75 default
 	edgeTreshold = 0.063 -> 0.333 : 0.166 default
-	edgeTresholdMin = 0.0312 -> 0.0833 : 0.0625 default 
+	edgeTresholdMin = 0.0312 -> 0.0833 : 0.0625 default
 */
 vec4 FxaaPixelShader( vec2 pos, sampler2D tex, vec2 fxaaQualityRcpFrame, float fxaaQualitySubpix,  float fxaaQualityEdgeThreshold, float fxaaQualityEdgeThresholdMin)
 {
@@ -598,7 +598,7 @@ vec4 FxaaPixelShader( vec2 pos, sampler2D tex, vec2 fxaaQualityRcpFrame, float f
 
     return FxaaFloat4(FxaaTexTop(tex, posM).xyz, lumaM);
 }
- 
+
 vec4 PostFX(sampler2D tex, vec2 uv)
 {
   vec4 c = vec4(0.0);
@@ -615,16 +615,16 @@ void main()
 	//vec4 color = texture(InputTex, texcoord);
 	//FinalColor = vec4(Reinhard(color.xyz + Exposure),1);
 	//FinalColor = pow(FinalColor, vec4(1.0 / 2.2));
-	
-	if(useAA){
-		FinalColor = PostFX(InputTex, texcoord);
-	}else {
-		FinalColor = vec4(texture(InputTex, texcoord).xyz,1);
-	}
-	
+
+	//if(useAA){
+	//	FinalColor = PostFX(InputTex, texcoord);
+	//}else {
+	FinalColor = vec4(texture(InputTex, texcoord).xyz,1);
+	//}
+
 	//FinalColor = vec4(DecodeNormal(texture(InputTex, texcoord)) * 0.5 + 0.5,1);
-	
-	
-	
+
+
+
 }
 #end_shader

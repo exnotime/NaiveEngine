@@ -8,7 +8,7 @@ namespace gfx {
 		~BlurProgram();
 		void Initlialize();
 		void SetTargetTexture(GLuint texture, float downScale);
-		void Render();
+		void Render(int nPass);
 		GLuint GetBluredTexture();
 	private:
 		unsigned int m_ShaderProgram;

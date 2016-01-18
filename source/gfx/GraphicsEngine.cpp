@@ -18,6 +18,7 @@
 #include "DeferedDecalProgram.h"
 #include "BloomProgram.h"
 #include "TransparencyProgram.h"
+#include "SSAOProgram.h"
 #include "gfxutility.h"
 using namespace gfx;
 
@@ -34,6 +35,7 @@ GraphicsEngine::~GraphicsEngine() {
 	SAFE_DELETE(m_DecalProgram);
 	SAFE_DELETE(m_BloomProgram);
 	SAFE_DELETE(m_TransparencyProgram);
+	SAFE_DELETE(m_SSAOProgram);
 }
 
 void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
@@ -107,10 +109,12 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	m_SkyCubeTex = new Texture();
 	m_SkyCubeTex->Init("asset/sky/skybox_rad.dds", TEXTURE_CUBE);
 	m_IrrCubeTex = new Texture();
-	m_IrrCubeTex->Init("asset/sky/skybox_irr.dss", TEXTURE_CUBE);
+	m_IrrCubeTex->Init("asset/sky/skybox_irr.dds", TEXTURE_CUBE);
 	m_SkyProgram = new SkyProgram();
 	m_SkyProgram->Init();
 	m_SkyProgram->SetSkyTexture("asset/sky/skybox.dds");
+	m_SSAOProgram = new SSAOProgram();
+	m_SSAOProgram->Initialize(m_GraphicsSettings.Width * 0.5f, m_GraphicsSettings.Height * 0.5f, 32, 8);
 }
 
 void GraphicsEngine::Deinitialize() {
@@ -196,6 +200,7 @@ void GraphicsEngine::DrawGeometry() {
 }
 
 void GraphicsEngine::DrawLight() {
+	m_SSAOProgram->Render(m_GBuffer, m_RenderQueue);
 	m_GBuffer->ApplyLightingStage();
 	g_LightEngine.BuildBuffer();
 
@@ -211,6 +216,7 @@ void GraphicsEngine::DrawLight() {
 	prog->SetUniformTextureHandle( "g_ShadowMap",		m_ShadowMap->GetTexture(),								 5 );
 	m_SkyCubeTex->Apply(prog->FetchUniform("g_SkyCubeTex"), 6);
 	m_IrrCubeTex->Apply(prog->FetchUniform("g_IrradianceCubeTex"), 7);
+	prog->SetUniformTextureHandle("g_SSAOTex", m_SSAOProgram->GetTexture(), 8);
 
 	prog->SetUniformMat4( "gLightMatrix",		m_ShadowMap->GetLightMatrix() );
 	prog->SetUniformUInt( "numDLights",		  g_LightEngine.GetDirLightCount() );
@@ -245,6 +251,7 @@ void GraphicsEngine::DrawPostFX() {
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_FXAAShader);
 	prog->Apply();
 	prog->SetUniformTextureHandle("InputTex", m_BloomProgram->GetFinalTexture(), 0);
+	//prog->SetUniformTextureHandle("InputTex", m_SSAOProgram->GetTexture(), 0);
 	prog->SetUniformVec2("ScreenSize", glm::vec2(m_GraphicsSettings.Width, m_GraphicsSettings.Height));
 	static bool useAA = true;
 	prog->SetUniformBool("useAA", useAA);

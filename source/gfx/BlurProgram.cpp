@@ -45,13 +45,13 @@ void gfx::BlurProgram::SetTargetTexture( GLuint texture, float downScale ){
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void gfx::BlurProgram::Render(){
+void gfx::BlurProgram::Render(int nPass){
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_ShaderProgram);
 	prog->Apply();
 	//set target texture sampler to linear mode
 	glBindTexture(GL_TEXTURE_2D, m_Target);
 	GLint oldMode = 0;
-	//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_MAG_FILTER, &oldMode);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_MAG_FILTER, &oldMode);
 
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -73,9 +73,26 @@ void gfx::BlurProgram::Render(){
 	prog->SetUniformTextureHandle("g_Image", m_Texture, 1);
 	glBindImageTexture(0, m_Texture2, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 	glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
+
+	for (int i = 0; i < nPass - 1; i++) {
+		//do horisontal pass
+		prog->SetUniformBool("g_Horisontal", true);
+		prog->SetUniformVec2("g_PixelSize", glm::vec2(1.0f / m_Width, 1.0f / m_Height));
+		prog->SetUniformVec2("g_ScreenSize", glm::vec2(m_Width, m_Height));
+		prog->SetUniformTextureHandle("g_Image", m_Texture2, 1);
+		glBindImageTexture(0, m_Texture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+		glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
+
+		//and vertical pass
+		prog->SetUniformBool("g_Horisontal", false);
+		prog->SetUniformTextureHandle("g_Image", m_Texture, 1);
+		glBindImageTexture(0, m_Texture2, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
+		glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
+	}
+
 	//restore state
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, oldMode);
+	//glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, oldMode);
 }
 
 GLuint gfx::BlurProgram::GetBluredTexture() {

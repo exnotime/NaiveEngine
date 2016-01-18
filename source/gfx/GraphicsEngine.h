@@ -15,6 +15,7 @@ class TerrainDeformationProgram;
 class DeferedDecalProgram;
 class BloomProgram;
 class TransparencyProgram;
+class SSAOProgram;
 typedef int  ShaderProgramHandle;
 
 struct GraphicsSettings {
@@ -52,6 +53,7 @@ class GraphicsEngine {
 	DeferedDecalProgram*		m_DecalProgram = nullptr;
 	BloomProgram*				m_BloomProgram = nullptr;
 	TransparencyProgram*		m_TransparencyProgram = nullptr;
+	SSAOProgram*				m_SSAOProgram = nullptr;
 
 	GraphicsSettings			m_GraphicsSettings;
 	int							m_BufferOffset;

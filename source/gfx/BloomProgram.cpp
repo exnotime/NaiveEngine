@@ -15,8 +15,8 @@ void gfx::BloomProgram::Initialize(){
 	glGenTextures(1, &m_BloomTexture);
 	glBindTexture(GL_TEXTURE_2D, m_BloomTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	m_BrightPassShader = g_ShaderBank.LoadShaderProgram("shader/BrightPass.glsl");
 	m_BloomShader = g_ShaderBank.LoadShaderProgram("shader/Bloom.glsl");
@@ -39,7 +39,7 @@ void gfx::BloomProgram::Render(){
 	glBindImageTexture(0, m_BloomTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 	glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
 	//blur result
-	m_BlurProgram->Render();
+	m_BlurProgram->Render(2);
 	//add to final target
 	prog = g_ShaderBank.GetProgramFromHandle(m_BloomShader);
 	prog->Apply();
@@ -64,5 +64,5 @@ void gfx::BloomProgram::SetTargetTexture(GLuint targetTex){
 	//resize texture
 	glBindTexture(GL_TEXTURE_2D, m_BloomTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	m_BlurProgram->SetTargetTexture(m_BloomTexture, 0.5f);
+	m_BlurProgram->SetTargetTexture(m_BloomTexture, 0.25f);
 }

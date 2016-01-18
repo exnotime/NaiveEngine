@@ -18,7 +18,7 @@ void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) 
 	//set up model component
 	ModelComponent mc;
 	mc.Color = color;
-	mc.Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
+	mc.Model = gfx::g_ModelBank.LoadModel("asset/model/sphere.dae");
 	g_ComponentManager.CreateComponent(&mc, entity, ModelComponent::Flag);
 	//set up rigid body
 	RigidBodyComponent rbc;

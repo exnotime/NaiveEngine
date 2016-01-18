@@ -75,7 +75,7 @@ vec3 CalcBumpedNormal(vec3 Normal, vec3 Tangent, sampler2D normalMap, vec2 uv){
 	vec3 bitangent = cross(tangent,normal);
 
 	vec3 bump = texture(normalMap,uv).xyz;
-	bump = (bump * 2.0) - 1.0; 
+	bump = (bump * 2.0) - 1.0;
 
 	vec3 newNormal;
 	mat3 TBN = mat3(tangent,bitangent,normal);
@@ -84,20 +84,20 @@ vec3 CalcBumpedNormal(vec3 Normal, vec3 Tangent, sampler2D normalMap, vec2 uv){
 }
 
 void main(){
-	
+
 	float roughness = texture(g_RoughnessTex,v_Out.TexCoord.xy).r;
 	float metallic =  texture(g_MetallicTex, v_Out.TexCoord.xy).r;
 	const float minRoughness=1e-8;
 	roughness = max(minRoughness, roughness);
 
-	vec3 normal = CalcBumpedNormal(v_Out.NormalW.xyz, v_Out.TangentW.xyz, g_NormalTex, v_Out.TexCoord.xy);
+	vec3 normal =  v_Out.NormalW.xyz;//CalcBumpedNormal(v_Out.NormalW.xyz, v_Out.TangentW.xyz, g_NormalTex, v_Out.TexCoord.xy);
 	vec4 albedo = texture(g_DiffuseTex, v_Out.TexCoord.xy);
 	if(albedo.a <= 0.01f){
 		discard;
 	}
 	vec3 baseColor = pow(albedo.xyz, vec3(2.2)) * v_Out.Color.xyz; //raise to 2.2(gamma) to be in linear space
 
-	FragmentNormal = normalize(normal);
+	FragmentNormal = normalize(normal) * 0.5 + 0.5;
 	FragmentColor.xyz = baseColor;
 	FragmentColor.a = 1; //do light calculation
 	FragmentRoughMetal = vec2(roughness, metallic);
