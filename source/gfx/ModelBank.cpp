@@ -111,6 +111,9 @@ gfx::ModelHandle gfx::ModelBank::CreateCustomModel( std::vector<VertexPosNormalT
 	model.Meshes.push_back(mesh);
 	model.MaterialOffset = 0; //make sure there is a default material loaded
 	model.VertexHandle = (int)m_Vertices.size();
+	model.IndexHandle = 0;
+	model.NumIndices = indices->size();
+	model.NumVertices = vertices->size();
 	model.Loaded = true;
 	//copy and offset indices
 	for (unsigned int i = 0; i < indices->size(); ++i) {

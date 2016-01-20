@@ -12,7 +12,7 @@
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw_gl3.h"
 #include <time.h>
-
+#include <utility/Randomizer.h>
 using namespace core;
 Engine::Engine() {
 
@@ -27,6 +27,7 @@ Engine::~Engine() {
 
 void Engine::Init() {
 	srand(time(0));
+	g_Randomizer.Seed(time(0));
 	//set up window
 	m_Window = new Window();
 	WindowSettings ws;

@@ -60,7 +60,6 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;GLM_FORCE_RADIANS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -151,6 +150,9 @@
     </ProjectReference>
     <ProjectReference Include="PHYSICS.vcxproj">
       <Project>{C84E5FC0-342E-DE5B-3D46-6932A9A444BD}</Project>
+    </ProjectReference>
+    <ProjectReference Include="UTILITY.vcxproj">
+      <Project>{99091B5C-05E9-99F7-0E01-25CE7A5F0059}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

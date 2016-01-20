@@ -3,14 +3,16 @@
 #include "PhysicsObject.h"
 #include <vector>
 #include <glm/glm.hpp>
+#include <utility/BasicShapes.h>
 #include "PhysicsLibraryDefine.h"
+
 #define g_PhysicsEngine PhysicsEngine::GetInstance()
 class PhysicsEngine {
 public:
 	~PhysicsEngine();
 	PHYSICS_API static PhysicsEngine& GetInstance();
 	PHYSICS_API void Init();
-	PHYSICS_API btRigidBody* AddPhysicsObject(float mass, glm::vec3 pos, glm::vec3 size);
+	PHYSICS_API btRigidBody* AddPhysicsObject(BASIC_SHAPE shape, float mass, glm::vec3 pos, glm::vec3 size);
 	PHYSICS_API void Update(const float deltatime);
 	PHYSICS_API void Shutdown();
 private:

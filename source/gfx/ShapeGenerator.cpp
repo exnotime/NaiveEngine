@@ -28,6 +28,9 @@ int ShapeGenerator::GenerateModel(BASIC_SHAPE shape) {
 		//unweld to create per vertex normals
 		par_shapes_unweld(mesh, true);
 		par_shapes_compute_normals(mesh);
+		//scale and translate into unit cube
+		par_shapes_scale(mesh, 2, 2, 2);
+		par_shapes_translate(mesh, -1, -1, -1);
 		break;
 	case PLANE:
 		mesh = par_shapes_create_plane(1,1);
@@ -37,9 +40,6 @@ int ShapeGenerator::GenerateModel(BASIC_SHAPE shape) {
 		break;
 	case SPHERE_SUBDIV:
 		mesh = par_shapes_create_subdivided_sphere(4);
-		//unweld to create per vertex normals
-		par_shapes_unweld(mesh, true);
-		par_shapes_compute_normals(mesh);
 		break;
 	case SPHERE_PARA:
 		mesh = par_shapes_create_parametric_sphere(32, 8);
@@ -81,6 +81,7 @@ int ShapeGenerator::GenerateModel(BASIC_SHAPE shape) {
 		return -1;
 	}
 	m_GeneratedShapes[shape] = CreateModelFromMesh(mesh);
+	par_shapes_free_mesh(mesh);
 	return m_GeneratedShapes[shape];
 }
 
@@ -123,7 +124,6 @@ int ShapeGenerator::CreateModelFromMesh(par_shapes_mesh_s*  mesh) {
 		indices.push_back(mesh->triangles[i + 1]);
 		indices.push_back(mesh->triangles[i + 2]);
 	}
-	par_shapes_free_mesh(mesh);
 	int modelhandle = g_ModelBank.CreateCustomModel(&vertices, &indices);
 	return modelhandle;
 }

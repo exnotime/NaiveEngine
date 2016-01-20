@@ -60,7 +60,6 @@
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;DEBUG;GFX_DLL_EXPORT;GLM_FORCE_RADIANS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>..\..\..\include;..\..\..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -159,6 +158,11 @@
     <ClCompile Include="..\..\..\source\gfx\Texture.cpp" />
     <ClCompile Include="..\..\..\source\gfx\TransparencyProgram.cpp" />
     <ClCompile Include="..\..\..\source\gfx\VertexBuffer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="UTILITY.vcxproj">
+      <Project>{99091B5C-05E9-99F7-0E01-25CE7A5F0059}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

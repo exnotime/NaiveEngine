@@ -4,10 +4,10 @@
 #include "core/components/PlacementComponent.h"
 #include "core/components/ModelComponent.h"
 #include "core/components/RigidBodyComponent.h"
-#include <gfx/ShapeGenerator.h>
 #include <physics/PhysicsEngine.h>
+#include <gfx/ShapeGenerator.h>
 
-void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) {
+void SpawnShape(BASIC_SHAPE shape, glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) {
 	//set up 
 	Entity& entity = g_EntityManager.CreateEntity();
 	//set up placement component
@@ -18,10 +18,10 @@ void SpawnCube(glm::vec3 position, glm::vec3 size, float mass, glm::vec4 color) 
 	//set up model component
 	ModelComponent mc;
 	mc.Color = color;
-	mc.Model = gfx::g_ShapeGenerator.GenerateModel(BASIC_SHAPE::CUBE);
+	mc.Model = gfx::g_ShapeGenerator.GenerateModel(shape);
 	g_ComponentManager.CreateComponent(&mc, entity, ModelComponent::Flag);
 	//set up rigid body
 	RigidBodyComponent rbc;
-	rbc.Body = g_PhysicsEngine.AddPhysicsObject(mass, pc.Position, pc.Scale);
+	rbc.Body = g_PhysicsEngine.AddPhysicsObject(shape ,mass, pc.Position, pc.Scale);
 	g_ComponentManager.CreateComponent(&rbc, entity, RigidBodyComponent::Flag);
 }

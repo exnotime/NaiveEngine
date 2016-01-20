@@ -1,21 +1,10 @@
 #pragma once
 #include "GFXLibraryDefine.h"
+#include <utility/BasicShapes.h>
 #include <unordered_map>
 /*
 This class uses par_shapes.h to generate shapes and puts them into the modelbank
 */
-enum BASIC_SHAPE {
-	CUBE,
-	PLANE,
-	SPHERE_SUBDIV,
-	SPHERE_PARA,
-	CYLINDER,
-	DONUT,
-	OCTOHEDRON,
-	TETRAHEDRON,
-	DODECAHEDRON,
-	ICOSAHEDRON
-};
 class par_shapes_mesh_s;
 namespace gfx {
 #define g_ShapeGenerator ShapeGenerator::GetInstance()
