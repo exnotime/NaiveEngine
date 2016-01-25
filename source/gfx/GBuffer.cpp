@@ -64,27 +64,27 @@ void GBuffer::Initialize( int width, int height ) {
 }
 
 void GBuffer::ApplyGeometryStage( ) {
-	glBindFramebuffer( GL_DRAW_FRAMEBUFFER, m_FBO );
+	glBindFramebuffer( GL_FRAMEBUFFER, m_FBO );
 	GLenum drawbuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2};
 	glDrawBuffers( 3, drawbuffers );
 }
 
 void gfx::GBuffer::ApplyDecalMode()
 {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	GLenum drawbuffers[] = { GL_COLOR_ATTACHMENT0 };
 	glDrawBuffers(1, drawbuffers);
 }
 
 void GBuffer::ApplyLightingStage( ) {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_FBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FBO);
 	GLenum drawbuffers[] = { GL_COLOR_ATTACHMENT3 };
 	glDrawBuffers(1, drawbuffers);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 
 void GBuffer::ApplyPostProcessStage( ) {
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void  GBuffer::ClearScreen() {

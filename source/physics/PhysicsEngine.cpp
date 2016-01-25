@@ -58,21 +58,22 @@ btRigidBody* PhysicsEngine::AddPhysicsObject(BASIC_SHAPE shape, float mass, glm:
 		par_shapes_free_mesh(mesh);
 		break;
 	case BASIC_SHAPE::DONUT:
-		mesh = par_shapes_create_torus(32, 32, 0.5f);
+		mesh = par_shapes_create_torus(8, 8, 0.5f);
 		physicsShape = new btConvexHullShape(mesh->points, mesh->npoints, sizeof(float) * 3);
 		par_shapes_free_mesh(mesh);
 		break;
 	default:
 		printf("unrecognized shape in physicsengine\n");
 		break;
-
 	};
 
 	btDefaultMotionState* state = new btDefaultMotionState();
 	btTransform transform(btQuaternion(0, 0, 0, 1), btVector3(pos.x, pos.y, pos.z));
 	state->setWorldTransform(transform);
-	btRigidBody* body = new btRigidBody(mass,state, physicsShape);
-	body->setRestitution(0.5f);
+	btVector3 inertia;
+	physicsShape->calculateLocalInertia(mass, inertia);
+	btRigidBody* body = new btRigidBody(mass,state, physicsShape, inertia);
+	body->setRestitution(0.0f);
 	m_World->addRigidBody(body);
 	m_PhysicsObjects.push_back(physicsShape);
 	return body;

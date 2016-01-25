@@ -16,6 +16,7 @@ class DeferedDecalProgram;
 class BloomProgram;
 class TransparencyProgram;
 class SSAOProgram;
+class CascadedShadowMap;
 typedef int  ShaderProgramHandle;
 
 struct GraphicsSettings {
@@ -54,7 +55,7 @@ class GraphicsEngine {
 	BloomProgram*				m_BloomProgram = nullptr;
 	TransparencyProgram*		m_TransparencyProgram = nullptr;
 	SSAOProgram*				m_SSAOProgram = nullptr;
-
+	CascadedShadowMap*			m_CascadedShadowMap = nullptr; 
 	GraphicsSettings			m_GraphicsSettings;
 	int							m_BufferOffset;
 	ShaderProgramHandle			m_PreFilterIblCompute;

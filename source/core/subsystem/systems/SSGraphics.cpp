@@ -33,6 +33,9 @@ void SSGraphics::Update(const float deltaTime) {
 	g_ComponentManager.GetBuffer((void**)&camera, CameraComponent::Flag);
 	gfx::View view;
 	view.camera = camera->Camera.GetData();
+	view.camera.Forward = camera->Camera.GetForward();
+	view.camera.Up = camera->Camera.GetUp();
+	view.camera.Right = camera->Camera.GetRight();
 	view.viewport.height = 900;
 	view.viewport.width = 1600;
 	view.viewport.x = 0;
@@ -56,7 +59,7 @@ void SSGraphics::Update(const float deltaTime) {
 
 	gfx::Light dl;
 	dl.Color = glm::vec4(1);
-	dl.Direction = glm::vec3(0, -0.9f, 0.5f);
+	dl.Direction = glm::vec3(0, -0.9f, 0.1f);
 	gfx::g_LightEngine.AddDirLightToQueue(dl);
 
 

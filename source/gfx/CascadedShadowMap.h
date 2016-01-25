@@ -17,6 +17,9 @@ namespace gfx{
 		glm::mat4* GetLightMatrices(){
 			return m_LightMatrices;
 		}
+		glm::mat4 GetLightRenderMatrix() {
+			return m_LightProj * m_LightView;
+		}
 		glm::vec4  GetNormalizedFarPlanes(){
 			return m_NormalizedFarPlanes;
 		}
@@ -28,15 +31,15 @@ namespace gfx{
 		
 		void FrustrumBoundingBoxLightViewSpace(float near, float far, glm::vec4& minOut, glm::vec4& maxOut, const CameraData& cd);
 	private:
-		const int m_SPLITS = 4;
+		const int m_SPLITS = 2;
 		const float m_FRUSTRUM_SPLIT_CORRECTION = 0.8f;
-		const float m_LIGHT_DISTANCE = 100.0f;
+		const float m_LIGHT_DISTANCE = 30.0f;
 		GLuint m_TextureArray;
 		GLuint m_FrameBuffer;
 		GLsizei m_Width;
 		GLsizei m_Height;
 		float m_Near = 0.1f;
-		float m_Far = 100.0f;
+		float m_Far = 250.0f;
 		unsigned int m_frustumSegmentCount = 4;
 		float m_Fov = PI * 0.5f;
 		unsigned int m_ShaderProg;

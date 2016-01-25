@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 using namespace gfx;
-#define LIGHT_TEXTURE_SIZE 4096.0f
+#define LIGHT_TEXTURE_SIZE 2048.0f
 CascadedShadowMap::CascadedShadowMap() { }
 
 CascadedShadowMap::~CascadedShadowMap() { }
@@ -20,7 +20,7 @@ void CascadedShadowMap::Initialize () {
 
 	glGenTextures ( 1, &m_TextureArray );
 	glBindTexture ( GL_TEXTURE_2D_ARRAY, m_TextureArray );
-	glTexStorage3D(GL_TEXTURE_2D_ARRAY, 11, GL_DEPTH_COMPONENT32F, (GLsizei)LIGHT_TEXTURE_SIZE, (GLsizei)LIGHT_TEXTURE_SIZE, m_SPLITS);
+	glTexStorage3D(GL_TEXTURE_2D_ARRAY, log2(LIGHT_TEXTURE_SIZE), GL_DEPTH_COMPONENT32F, (GLsizei)LIGHT_TEXTURE_SIZE, (GLsizei)LIGHT_TEXTURE_SIZE, m_SPLITS);
 	glTexParameteri ( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MIN_FILTER,   GL_LINEAR );
 	glTexParameteri ( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_MAG_FILTER,   GL_LINEAR );
 	glTexParameteri ( GL_TEXTURE_2D_ARRAY, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE );
@@ -30,30 +30,28 @@ void CascadedShadowMap::Initialize () {
 	glBindTexture ( GL_TEXTURE_2D_ARRAY, 0 );
 	glBindFramebuffer ( GL_FRAMEBUFFER, 0 );
 
-	m_ShaderProg = g_ShaderBank.LoadShaderProgram ( "../../../shader/CascadedShadowMap.glsl" );
+	m_ShaderProg = g_ShaderBank.LoadShaderProgram ( "shader/CascadedShadowMap.glsl" );
 
 	glGetFloatv ( GL_MAX_VIEWPORT_DIMS, &m_ViewportDims[0] );
 
 	g_BufferManager.BindBufferToProgram ( "ShaderInputs", g_ShaderBank.GetProgramFromHandle ( m_ShaderProg ), 0 );
+	SplitFrustrums();
 }
 
-void CascadedShadowMap::Render ( RenderQueue* rq ) {
-	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle ( m_ShaderProg );
+void CascadedShadowMap::Render(RenderQueue* rq) {
+	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_ShaderProg);
 	prog->Apply();
-	glBindFramebuffer ( GL_FRAMEBUFFER, m_FrameBuffer );
+	glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBuffer);
 
-	glEnable ( GL_DEPTH_TEST );
-	glEnable (  GL_CULL_FACE );
-	glCullFace ( GL_BACK );
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
 	const GLfloat one = 1.0f;
-	glClearBufferfv ( GL_DEPTH, 0, &one );
-	Update ( rq );
-	prog->SetUniformInt ( "g_FrustrumSegmentCount", m_SPLITS );
-	prog->SetUniformVec2 ( "g_ShadowMapSize", glm::vec2 ( m_Width, m_Height ) );
-	prog->SetUniformVec4 ( "g_Viewports[0]", m_LightViewports[0] );
-	prog->SetUniformVec4 ( "g_Viewports[1]", m_LightViewports[1] );
-	prog->SetUniformVec4 ( "g_Viewports[2]", m_LightViewports[2] );
-	prog->SetUniformVec4 ( "g_Viewports[3]", m_LightViewports[3] );
+	glClearBufferfv(GL_DEPTH, 0, &one);
+	Update(rq);
+	prog->SetUniformInt("g_FrustrumSegmentCount", m_SPLITS);
+	prog->SetUniformVec2("g_ShadowMapSize", glm::vec2(m_Width, m_Height));
+	glUniform4fv(prog->FetchUniform("g_Viewports"), 4, (float*)&m_LightViewports);
 
 	glm::mat4 viewProj = m_LightProj * m_LightView;
 	prog->SetUniformMat4 ( "g_ViewProj", viewProj );
@@ -72,13 +70,14 @@ void CascadedShadowMap::Render ( RenderQueue* rq ) {
 		}
 		bufferOffset += instanceCount;
 	}
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glUseProgram(0); 
 }
 
 void CascadedShadowMap::SetLight ( const Light& l ) {
-	// calc light matrices
-	glm::vec3 pos = glm::normalize(-l.Direction) * m_LIGHT_DISTANCE;
-
-	m_LightView = glm::lookAt ( glm::vec3(100), glm::vec3 ( 0 ), glm::vec3 ( 0, 1.0f, 0 ) );
+	// calc light matrix
+	glm::vec3 pos = glm::normalize( l.Direction) * m_LIGHT_DISTANCE;
+	m_LightView = glm::lookAt (pos, glm::vec3 ( 0 ), glm::vec3 ( 0, 1.1f, 0 ) );
 }
 
 void CascadedShadowMap::Update ( RenderQueue* rq ) {
@@ -124,7 +123,7 @@ void CascadedShadowMap::Update ( RenderQueue* rq ) {
 
 		// Update light view-projection matrices per segment.
 		glm::mat4 lightProj;
-		lightProj = glm::ortho( segmentMin.x, segmentMin.x + segmentSize, segmentMin.y, segmentMin.y + segmentSize, 0.0f, frustumMin.z);
+		lightProj = glm::ortho( segmentMin.x, segmentMin.x + segmentSize, segmentMin.y, segmentMin.y + segmentSize, 0.1f, frustumMin.z);
 		glm::mat4 lightScale;
 		lightScale = glm::scale(glm::vec3(0.5f * scaleFactor.x, 0.5f * scaleFactor.y, 0.5f));
 		glm::mat4 lightBias;
@@ -141,7 +140,7 @@ void CascadedShadowMap::Update ( RenderQueue* rq ) {
 }
 
 void CascadedShadowMap::SplitFrustrums() {
-	m_LightProj = glm::perspective ( m_Fov, ( 16.0f / 9.0f ), m_Near, m_Far );
+	glm::mat4 proj = glm::perspective ( m_Fov, ( 16.0f / 9.0f ), m_Near, m_Far );
 
 	for (unsigned int i = 1; i <= m_frustumSegmentCount; ++i)
 	{
@@ -150,7 +149,7 @@ void CascadedShadowMap::SplitFrustrums() {
 		const float corrTerm = m_Near + distFactor * (m_Far - m_Near);
 		const float viewDepth = m_FRUSTRUM_SPLIT_CORRECTION * stdTerm + (1.0f - m_FRUSTRUM_SPLIT_CORRECTION) * corrTerm;
 		m_FarPlanes[i - 1] = viewDepth;
-		const glm::vec4 projectedDepth = m_LightProj * glm::vec4(0.0f, 0.0f, -viewDepth, 1.0f);
+		const glm::vec4 projectedDepth = proj * glm::vec4(0.0f, 0.0f, -viewDepth, 1.0f);
 		// Normalized to [0, 1] depth range.
 		m_NormalizedFarPlanes[i - 1] = (projectedDepth.z / projectedDepth.w) * 0.5f + 0.5f;
 	}
@@ -161,14 +160,14 @@ void CascadedShadowMap::FrustrumBoundingBoxLightViewSpace ( float near, float fa
 	glm::vec4 frustumMax(std::numeric_limits<float>::lowest());
 
 	const float nearHeight = 2.0f * tan(m_Fov * 0.5f) * near;
-	const float nearWidth = nearHeight * static_cast<float>(m_Width) / m_Height;
+	const float nearWidth = nearHeight * static_cast<float>(cd.Width) / cd.Height;
 	const float farHeight = 2.0f * tan(m_Fov * 0.5f) * far;
-	const float farWidth = farHeight * static_cast<float>(m_Width) / m_Height;
-	const glm::vec4 cameraPos = glm::vec4(cd.Position, 1);
+	const float farWidth = farHeight * static_cast<float>(cd.Width) / cd.Height;
+	const glm::vec4 cameraPos = glm::inverse(glm::translate(cd.Position)) * glm::vec4(0, 0, 0, 1);
 	const glm::mat4 invRot = glm::inverse(cd.View);
-	const glm::vec4 viewDir = invRot *  glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-	const glm::vec4 upDir = invRot * glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-	const glm::vec4 rightDir = invRot * glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
+	const glm::vec4 viewDir = invRot * glm::vec4(0,0,-1, 0);
+	const glm::vec4 upDir = invRot * glm::vec4(0, 1, 0, 0);
+	const glm::vec4 rightDir = invRot * glm::vec4(1, 0, 0, 0);
 	const glm::vec4 nc = cameraPos + viewDir * near; // near center
 	const glm::vec4 fc = cameraPos + viewDir * far; // far center
 

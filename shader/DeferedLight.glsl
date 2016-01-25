@@ -26,6 +26,8 @@ uniform vec3 gCamPos;
 uniform vec2 gScreenOffset;
 uniform vec2 gViewportSize;
 uniform mat4 gLightMatrix;
+uniform vec4 gNormalizedFarPlanes;
+uniform mat4 gLightMatrices[4];
 
 layout(binding = 4) uniform sampler2D	g_BRDFTex;
 layout(binding = 8) uniform sampler2D	g_SSAOTex;
@@ -76,9 +78,33 @@ float ComputeShadow(vec3 posW){
     		factor += texture(g_ShadowMap, UVC);
     	}
     }
-
 	return factor / 9.0f;
 }
+/*
+vec3 computeShadowCoords(int slice, vec3 posW){
+    // Orthographic projection doesn't need division by w.
+    vec4 shadowCoords = gLightMatrices[slice] * vec4(posW, 1);
+    return shadowCoords.xyz;
+}
+
+float computeShadowCoef(vec3 posW, float z){
+    int slice = 3;
+    if (z < gNormalizedFarPlanes.x) {
+        slice = 0;
+    } else if (z < gNormalizedFarPlanes.y) {
+        slice = 1;
+    } else if (z < gNormalizedFarPlanes.z) {
+        slice = 2;
+    }
+    vec4 shadowCoords;
+    // Swizzling specific for shadow sampler.
+    shadowCoords.xyw = computeShadowCoords(slice, posW);
+    // Bias to reduce shadow acne.
+    shadowCoords.w -= 0.001;
+    shadowCoords.z = float(slice);
+    return texture(g_ShadowMap, shadowCoords);
+}
+*/
 vec3 Reinhard(vec3 c){
 	return c / (c + 1);
 }
@@ -119,14 +145,14 @@ void main()
 	ivec2 screenPos = ivec2(gScreenOffset) + ivec2(gl_GlobalInvocationID.xy);
 	vec2 uv = vec2(screenPos) / vec2(gScreenSize - 1);
 
-	float depth = texelFetch(gDepthBuffer, screenPos.xy, 0).r;
+	float depth = texelFetch(gDepthBuffer, screenPos.xy, 0).r * 2 - 1;
 	float zNear = gProj[3][2] / (gProj[2][2] - 1.0f);
 	float zFar 	= gProj[3][2] / (gProj[2][2] + 1.0f);
 	float clipDelta = zFar - zNear;
 
 	vec2 viewPortUV = vec2(gl_GlobalInvocationID.xy) / vec2(gViewportSize - 1);
 	//Worldpos
-	vec4 sPos = vec4(viewPortUV * 2 - 1, depth,1);
+	vec4 sPos = vec4(viewPortUV * 2 - 1, depth, 1);
 	vec4 projPos = gInvProjView * sPos;
 	vec4 posW = vec4(projPos.xyz / projPos.w , projPos.w);
 
@@ -210,12 +236,15 @@ void main()
 
 	vec3 normal = texelFetch(gNormalBuffer, screenPos, 0).xyz * 2 - 1;
 	normal = normalize(normal);
+
 	vec2 roughnessMetal = texelFetch(gRoughMetalBuffer, screenPos, 0).xy;
 	roughnessMetal.x = roughnessMetal.x * roughnessMetal.x;
+
 	float AO = texture( g_SSAOTex, uv ).r;
+	float shadow = ComputeShadow(posW.xyz);// computeShadowCoef(posW.xyz, depth);
+
 	vec4 lightColor = vec4(0.0);
 	uint i;
-	float shadow =  1.0f;//ComputeShadow(posW.xyz);
 	for(i = 0; i < sPointLightCount; ++i){
 		Light p = lights[sPointLightIndex[i]];
 		lightColor += CalcPLight(p, normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y );
@@ -230,6 +259,5 @@ void main()
 	float luma = dot( lightColor.rgb, vec3(0.299, 0.587, 0.114) );
 	vec4 outColor = vec4(Reinhard(lightColor.rgb), luma);
 	imageStore(output_img, screenPos, pow(outColor, vec4(1.0 / 2.2)));
-
 }
 #end_shader

@@ -23,9 +23,11 @@ void main(){
 #end_shader
 
 #new_shader geometry
-#version 430
+#version 440 core
+#extension GL_NV_viewport_array2 : require
 layout(triangles) in;
-layout(triangle_strip, max_vertices = 12) out;
+layout(triangle_strip, max_vertices = 3) out;
+layout(viewport_relative) out int gl_Layer;
 #define MAX_VIEWPORTS 4
 
 uniform vec4 g_Viewports[MAX_VIEWPORTS];
@@ -44,32 +46,32 @@ bool BBIntersects(vec4 bb0, vec4 bb1){
 	bool ymiss = bb0.y > bb1.w || bb0.w < bb1.y;
 	return !xmiss && !ymiss;
 }
-
-void SendPrimitive(int vp){
-	for(int i = 0; i < gl_in.length();++i){
-		gl_Position = gl_in[i].gl_Position;
-		gl_ViewportIndex = vp;
-		gl_Layer = vp;
-		EmitVertex();
-	}
-	EndPrimitive();
-}
-
 void main(){
-	const vec4 mapBounds = vec4(0,0,g_ShadowMapSize);
-	for(int segment = 0; segment < g_FrustrumSegmentCount; ++segment){
-		vec2 startPos = GetWindowPos(gl_in[0].gl_Position, segment);
-		vec4 primBounds = vec4(startPos, startPos);
-		for(int i = 1; i < gl_in.length(); ++i){
-			vec2 windowPos = GetWindowPos(gl_in[i].gl_Position, segment);
-			primBounds.x = min(primBounds.x, windowPos.x);
-			primBounds.y = min(primBounds.y, windowPos.y);
-			primBounds.x = max(primBounds.x, windowPos.x);
-			primBounds.x = max(primBounds.y, windowPos.y);
-		}
-		if(BBIntersects(primBounds, mapBounds)){
-			SendPrimitive(segment);
-		}
-	}
+	const vec4 mapBounds = vec4(0, 0, g_ShadowMapSize);
+    int viewportMask = 0;
+    for (int segment = 0; segment < g_FrustrumSegmentCount; ++segment) {
+        vec2 start_Pos = GetWindowPos(gl_in[0].gl_Position, segment);
+        vec4 primBounds = vec4(start_Pos, start_Pos); // minx, miny, maxx, maxy
+        for (int i = 1; i < gl_in.length(); ++i) {
+            vec2 window_Pos = GetWindowPos(gl_in[i].gl_Position, segment);
+            primBounds.x = min(primBounds.x, window_Pos.x);
+            primBounds.y = min(primBounds.y, window_Pos.y);
+            primBounds.z = max(primBounds.x, window_Pos.x);
+            primBounds.w = max(primBounds.y, window_Pos.y);
+        }
+        // we should only emit the primitive if its bounding box intersects the current viewport
+        if (BBIntersects(primBounds, mapBounds)) {
+            viewportMask |= (1 << segment);
+        }
+    }
+
+    // send the whole primitive with the viewport mask we calculated
+    for (int i = 0; i < gl_in.length(); ++i) {
+        gl_Position = gl_in[i].gl_Position;
+        gl_ViewportMask[0] = viewportMask;
+        gl_Layer = 0;
+        EmitVertex();
+    }
+    EndPrimitive();
 }
 #end_shader

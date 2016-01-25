@@ -11,7 +11,7 @@ layout(rgba8, binding = 0) writeonly restrict uniform image2D output_img;
 
 vec3 GaussianBlur( sampler2D tex0, vec2 texcoord, vec2 pixelOffset){
 	//35 x 35 filter
- 	/*
+
  	const int stepCount = 9;
 
     const float weights[stepCount] ={
@@ -36,7 +36,7 @@ vec3 GaussianBlur( sampler2D tex0, vec2 texcoord, vec2 pixelOffset){
         14.38070,
         16.36501
      };
-	*/
+	 /*
 	const int stepCount = 2;
 	const float weights[stepCount] ={
 		0.44908, 0.05092
@@ -44,6 +44,7 @@ vec3 GaussianBlur( sampler2D tex0, vec2 texcoord, vec2 pixelOffset){
 	const float offsets[stepCount] ={
 		0.53805, 2.0678
 	};
+	*/
      vec3 color = vec3(0);
 	for(int i = 0; i < stepCount; i++){
 		vec2 texOffset = offsets[i] * pixelOffset;

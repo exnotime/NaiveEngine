@@ -4,6 +4,7 @@
 namespace gfx {
 	class RenderQueue;
 	struct Light;
+	class BlurProgram;
 	class ShadowMap {
 	public:
 		ShadowMap();
@@ -13,19 +14,18 @@ namespace gfx {
 		void Render ( RenderQueue* rq );
 		void SetLight ( const Light& light );
 		glm::mat4 GetLightMatrix()const;
-
-		const GLuint GetTexture() const {
-			return m_Texture;
-		} 
+		const GLuint GetTexture() const;
 
 	private:
-		GLsizei		 m_Size = 4096;
+		GLsizei		 m_Size = 1024;
 		GLuint		 m_Texture	   = 0;
 		GLuint		 m_FrameBuffer = 0;
 		glm::mat4	 m_View;
 		glm::mat4	 m_Proj;
-		float		 m_Far	= 200.0f;
+		glm::mat4	 m_Bias;
+		float		 m_Far	= 100.0f;
 		float		 m_Near = 1.0f;
 		unsigned int m_Shader;
+		BlurProgram* m_BlurProgram;
 	};
 }

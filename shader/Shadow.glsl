@@ -17,7 +17,6 @@ layout(std430, binding = 0) buffer ShaderInputs{
 };
 void main(){
 	uint id = g_BufferOffset + gl_InstanceID;
-	vec4 PosW = g_Input[id].World * vec4(PosL.xyz,1);
-	gl_Position = g_ViewProj * PosW;
+	gl_Position =( g_ViewProj * g_Input[id].World ) * vec4(PosL.xyz,1);
 }
 #end_shader
