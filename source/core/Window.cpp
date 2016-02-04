@@ -23,8 +23,8 @@ void Window::Initialize(const WindowSettings& windowSettings) {
 	//glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, true);
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_DOUBLEBUFFER, true);
-	glfwWindowHint(GLFW_SRGB_CAPABLE, true);
+	//glfwWindowHint(GLFW_DOUBLEBUFFER, true);
+	//glfwWindowHint(GLFW_SRGB_CAPABLE, true);
 	//glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE);
 	// Create an application window with the following settings:
 	m_Window = glfwCreateWindow(m_WindowSettings.Width, m_WindowSettings.Height, m_WindowSettings.Title.c_str(), nullptr, nullptr);
@@ -33,7 +33,7 @@ void Window::Initialize(const WindowSettings& windowSettings) {
 		printf("error creating window\n");
 		return;
 	}
-	glfwMakeContextCurrent(m_Window);
+	//glfwMakeContextCurrent(m_Window);
 	//set up vsync
 	if (m_WindowSettings.Vsync) {
 		glfwSwapInterval(1);

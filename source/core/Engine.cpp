@@ -1,6 +1,9 @@
 #include "engine.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#define GLFW_EXPOSE_NATIVE_WGL
+#include <GLFW/glfw3native.h>
 #include <glm/glm.hpp>
 #include <imgui/imgui.h>
 #include "datasystem/ComponentManager.h"
@@ -13,6 +16,8 @@
 #include "../imgui/imgui_impl_glfw_gl3.h"
 #include <time.h>
 #include <utility/Randomizer.h>
+#include <gfx_dx/DXEngine.h>
+
 using namespace core;
 Engine::Engine() {
 
@@ -21,12 +26,12 @@ Engine::Engine() {
 Engine::~Engine() {
 	delete m_Window;
 	m_SubSystemSet.ShutdownSubSystems();
-	ImGui_ImplGlfwGL3_Shutdown();
+	//ImGui_ImplGlfwGL3_Shutdown();
+	delete m_DXEngine;
 	glfwTerminate();
 }
 
 void Engine::Init() {
-	srand(time(0));
 	g_Randomizer.Seed(time(0));
 	//set up window
 	m_Window = new Window();
@@ -34,11 +39,14 @@ void Engine::Init() {
 	ws.Width = 1600;
 	ws.Height = 900;
 	ws.HighDPI = true;
-	ws.OpenGL = true;
+	//ws.OpenGL = true;
 	ws.Title = "Naive engine";
 	ws.Vsync = true;
 	m_Window->Initialize(ws);
-	ImGui_ImplGlfwGL3_Init(m_Window->GetWindow(), true);
+	//ImGui_ImplGlfwGL3_Init(m_Window->GetWindow(), true);
+	m_DXEngine = new gfx_dx::DXengine();
+	m_DXEngine->Init(glfwGetWin32Window(m_Window->GetWindow()), 1600, 900);
+
 	g_ComponentManager.Init();
 	glfwSetKeyCallback(m_Window->GetWindow(), KeyboardCallBack);
 	glfwSetMouseButtonCallback(m_Window->GetWindow(), MouseButtonCallback);
@@ -46,10 +54,10 @@ void Engine::Init() {
 	g_Input.SetCursorMode(m_Window->GetWindow(), GLFW_CURSOR_DISABLED);
 
 
-	m_SubSystemSet.AddSubSystem(new SSCamera(), 0, 0, 0);
-	m_SubSystemSet.AddSubSystem(new SSGraphics(), 0, 1, 0);
-	m_SubSystemSet.AddSubSystem(new SSPhysics(), 0, 2, 0);
-	m_SubSystemSet.AddSubSystem(new SSStartup(), 0, 3, 0);
+	//m_SubSystemSet.AddSubSystem(new SSCamera(), 0, 0, 0);
+	//m_SubSystemSet.AddSubSystem(new SSGraphics(), 0, 1, 0);
+	//m_SubSystemSet.AddSubSystem(new SSPhysics(), 0, 2, 0);
+	//m_SubSystemSet.AddSubSystem(new SSStartup(), 0, 3, 0);
 	m_SubSystemSet.StartSubSystems();
 }
 
@@ -61,16 +69,18 @@ void Engine::Run() {
 			g_Input.SetCursorMode(m_Window->GetWindow(), mode);
 		}
 
-		ImGui_ImplGlfwGL3_NewFrame();
+		//ImGui_ImplGlfwGL3_NewFrame();
 
-		m_SubSystemSet.UpdateSubSystems(1.0f / 60.0f);
-
+		//m_SubSystemSet.UpdateSubSystems(1.0f / 60.0f);
+		m_DXEngine->Update();
+		m_DXEngine->Render();
+		m_DXEngine->Swap();
 		//render imgui
-		ImGui::ShowMetricsWindow();
-		glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
-		ImGui::Render();
+		//ImGui::ShowMetricsWindow();
+		//glViewport(0, 0, (int)ImGui::GetIO().DisplaySize.x, (int)ImGui::GetIO().DisplaySize.y);
+		//ImGui::Render();
 
-		glfwSwapBuffers(m_Window->GetWindow());
+		//glfwSwapBuffers(m_Window->GetWindow());
 
 		if (g_Input.IsKeyDown(GLFW_KEY_ESCAPE))
 			break;
