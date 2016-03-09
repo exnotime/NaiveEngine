@@ -1,9 +1,14 @@
 #define MAX_OBJECTS 1000
 struct InputData{
-	float4x4 wvp;
+	float4x4 World;
+	float4 Color;
 };
 
-ConstantBuffer<InputData> gShaderData : register(b0);
+StructuredBuffer<InputData> gShaderData : register(t1);
+
+cbuffer PerFrameBuffer : register(b0){
+	float4x4 g_ViewProj;
+};
 
 struct PSInput
 {
@@ -18,7 +23,7 @@ PSInput VSMain(float4 position : POSITION, float4 uv : TEXCOORD)
 {
 	PSInput result;
 
-	result.position = mul(position, gShaderData.wvp);
+	result.position = mul(position, gShaderData[0].World);
 	result.uv = uv.xy;
 
 	return result;
@@ -26,5 +31,5 @@ PSInput VSMain(float4 position : POSITION, float4 uv : TEXCOORD)
 
 float4 PSMain(PSInput input) : SV_TARGET
 {
-	return  float4(1,0,0,1);//g_texture.Sample(g_sampler, input.uv);
+	return gShaderData[0].Color;//g_texture.Sample(g_sampler, input.uv);
 }

@@ -3,6 +3,10 @@
 #include <vector>
 #include "GFXDXLibraryDefine.h"
 #include <d3d12.h>
+#include "d3dx12.h"
+#include <wrl/client.h>
+using Microsoft::WRL::ComPtr;
+#define MAX_OBJECTS 1000
 namespace gfx_dx {
 typedef int ModelHandle;
 
@@ -51,7 +55,7 @@ class RenderQueue {
 	GFX_DX_API void Enqueue(ModelHandle model, const std::vector<ShaderInput>& inputs);
 	GFX_DX_API void Enqueue(ModelHandle model, const ShaderInput& input);
 	GFX_DX_API void Clear();
-	void CreateBuffer(ID3D12Device* device);
+	void CreateBuffer(ID3D12Device* device, D3D12_CPU_DESCRIPTOR_HANDLE descHandle);
 	void UpdateBuffer();
 	ID3D12Resource* GetBuffer();
 
@@ -69,8 +73,7 @@ class RenderQueue {
 	std::vector<ModelObject>			m_ModelQueue;
 	std::vector<View>					m_Views;
 	std::vector<ShaderInput>			m_ShaderInputs;
-	ID3D12Resource*						m_ShaderInputbuffer;
-	const int							MAX_OBJECTS = 1000; //change this to increase the number of items to render //also need to update shaders
+	ComPtr<ID3D12Resource>				m_ShaderInputbuffer;
 	const int							SIZE_OF_OBJECT = sizeof(ShaderInput);
 };
 }

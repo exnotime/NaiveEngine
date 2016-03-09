@@ -1,7 +1,8 @@
 #pragma once
 #include <Bullet/btBulletDynamicsCommon.h>
 struct RigidBodyComponent {
-	btRigidBody* Body;
+	btRigidBody* Body = nullptr;
+	btCollisionObject* CollisionObject = nullptr;
 	static unsigned int Flag;
 };
 

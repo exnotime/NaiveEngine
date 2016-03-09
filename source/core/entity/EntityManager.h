@@ -10,7 +10,7 @@ public:
 
 	Entity& CreateEntity();
 	void RemoveEntity(Entity& entity);
-
+	void PrintInfo();
 	std::vector<Entity>& GetEntityList();
 private:
 	EntityManager();

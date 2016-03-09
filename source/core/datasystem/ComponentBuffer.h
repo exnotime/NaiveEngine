@@ -57,7 +57,7 @@ public:
 
 	}
 
-	void* GetComponent(int index) {
+	void* GetComponent(uint index) {
 		if (index >= m_Size)
 			return nullptr;
 		uint i = m_Handles[index];

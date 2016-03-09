@@ -15,7 +15,7 @@ uniform vec2 gScreenOffset = vec2(0,0);
 uniform vec2 gScreenSize;
 uniform uint gKernelSize;
 uniform vec3 gKernel[MAX_KERNEL_SIZE];
-uniform float gPower = 1.5;
+uniform float gPower = 2.0;
 uniform float gRadius = 1.2;
 layout(r8, binding = 0) writeonly restrict uniform image2D output_img;
 
@@ -43,8 +43,8 @@ float ssao(in mat3 kernelBasis, in vec3 originPos, in float radius) {
 		occlusion += rangeCheck * step(sampleDepth, samplePos.z);
 	}
 
-	occlusion = 1.0 - (occlusion / float(gKernelSize));
-	return pow(occlusion, gPower);
+	occlusion = (occlusion / float(gKernelSize));
+	return 1.0 - pow(occlusion, gPower);
 }
 
 void main(){

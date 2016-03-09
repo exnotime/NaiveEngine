@@ -10,7 +10,6 @@ gfx_dx::DXengine::DXengine(){
 
 gfx_dx::DXengine::~DXengine(){
 
-	m_ConstantBuffer->Unmap(0, nullptr);
 }
 
 void gfx_dx::DXengine::Init(HWND hWnd, int width, int height){
@@ -19,8 +18,8 @@ void gfx_dx::DXengine::Init(HWND hWnd, int width, int height){
 	m_viewport.TopLeftX = 0;
 	m_viewport.TopLeftY = 0;
 	m_viewport.MinDepth = 0;
-	m_viewport.Width = width;
-	m_viewport.Height = height;
+	m_viewport.Width = (float)width;
+	m_viewport.Height = (float)height;
 	m_viewport.MaxDepth = 1.0f;
 
 	m_scissorRect.right = width;
@@ -83,26 +82,6 @@ void gfx_dx::DXengine::Init(HWND hWnd, int width, int height){
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	hr = m_Device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&m_CbvSrvUavHeap));
 
-	D3D12_DESCRIPTOR_HEAP_DESC samplerHeapDesc = {};
-	srvHeapDesc.NumDescriptors = 1;
-	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
-	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	hr = m_Device->CreateDescriptorHeap(&samplerHeapDesc, IID_PPV_ARGS(&m_SamplerHeap));
-
-	//create sampler
-	D3D12_SAMPLER_DESC samplerDesc = {};
-	samplerDesc.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
-	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-	samplerDesc.MinLOD = 0;
-	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;
-	samplerDesc.MipLODBias = 0.0f;
-	samplerDesc.MaxAnisotropy = 1;
-	samplerDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE samplerhandle(m_SamplerHeap->GetCPUDescriptorHandleForHeapStart());
-	m_Device->CreateSampler(&samplerDesc, samplerhandle);
-
 	//get size of descriptors
 	m_RTVHeapSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
 	m_HeapDescSize = m_Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
@@ -122,12 +101,11 @@ void gfx_dx::DXengine::Init(HWND hWnd, int width, int height){
 void gfx_dx::DXengine::Update() {
 	static float angle = 0.0f;
 	angle += 0.01f;
-	m_CBufferData.wvp = glm::perspectiveFov(1.2f, 1600.0f, 900.0f, 0.1f, 100.0f) * glm::lookAt(glm::vec3(0.8f,0.3f, 2.0f), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)) * (glm::scale(glm::vec3(0.5f)) * glm::rotate(angle, glm::vec3(0,1,0)));
-	m_CBufferData.wvp = glm::transpose(m_CBufferData.wvp);
+	glm::mat4 wvp;
+	wvp = glm::perspectiveFov(1.2f, 1600.0f, 900.0f, 0.1f, 100.0f) * glm::lookAt(glm::vec3(0.8f,0.3f, 2.0f), glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)) * (glm::scale(glm::vec3(0.5f)) * glm::rotate(angle, glm::vec3(0,1,0)));
+	wvp = glm::transpose(wvp);
 	//upload cbuffer
-	HRESULT hr = m_ConstantBuffer->Map(0, nullptr, reinterpret_cast<void**>(&m_CBufferBegin));
-	memcpy(m_CBufferBegin, &m_CBufferData, sizeof(m_CBufferData));
-	m_ConstantBuffer->Unmap(0, nullptr);
+
 }
 
 void gfx_dx::DXengine::Render(){
@@ -142,7 +120,6 @@ void gfx_dx::DXengine::Render(){
 	m_GFXCommandList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 
 	m_GFXCommandList->SetGraphicsRootDescriptorTable(0, m_CbvSrvUavHeap->GetGPUDescriptorHandleForHeapStart());
-	//m_GFXCommandList->SetGraphicsRootDescriptorTable(1, m_SamplerHeap->GetGPUDescriptorHandleForHeapStart());
 	//set viewport and rect
 	m_GFXCommandList->RSSetViewports(1, &m_viewport);
 	m_GFXCommandList->RSSetScissorRects(1, &m_scissorRect);
@@ -158,7 +135,6 @@ void gfx_dx::DXengine::Render(){
 	m_GFXCommandList->IASetVertexBuffers(0, 1, &m_VBOView);
 	m_GFXCommandList->IASetIndexBuffer(&m_IBOView);
 	m_GFXCommandList->DrawIndexedInstanced(6, 1, 0, 0, 0);
-
 	//close cmdlist
 	m_GFXCommandList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(m_RenderTargets[m_FrameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT));
 	hr = m_GFXCommandList->Close();
@@ -187,17 +163,34 @@ void gfx_dx::DXengine::LoadAssets(){
 		//descriptor table 
 		CD3DX12_DESCRIPTOR_RANGE ranges[2];
 		ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
-		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);
+		ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);
 
-		CD3DX12_ROOT_PARAMETER rootParameters[2];
-		rootParameters[0].InitAsDescriptorTable(1, &ranges[0], D3D12_SHADER_VISIBILITY_PIXEL);
-		rootParameters[1].InitAsDescriptorTable(1, &ranges[1], D3D12_SHADER_VISIBILITY_VERTEX);
+		CD3DX12_ROOT_PARAMETER rootParameters[1];
+		rootParameters[0].InitAsDescriptorTable(2, &ranges[0], D3D12_SHADER_VISIBILITY_ALL);
 
+		//create a static sampler
+		CD3DX12_STATIC_SAMPLER_DESC sampDesc = {};
+		sampDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		sampDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		sampDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		sampDesc.ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+		sampDesc.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		sampDesc.MaxAnisotropy = 1;
+		sampDesc.MaxLOD = D3D12_FLOAT32_MAX;
+		sampDesc.MinLOD = 0;
+		sampDesc.MipLODBias = 0;
+		sampDesc.RegisterSpace = 0;
+		sampDesc.ShaderRegister = 0;
+		sampDesc.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 		CD3DX12_ROOT_SIGNATURE_DESC rootSignDesc;
-		rootSignDesc.Init(_countof(rootParameters), rootParameters, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+		rootSignDesc.Init(_countof(rootParameters), rootParameters, 1, &sampDesc, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
 		ComPtr<ID3DBlob> sign;
 		ComPtr<ID3DBlob> error;
 		hr = D3D12SerializeRootSignature(&rootSignDesc, D3D_ROOT_SIGNATURE_VERSION_1, &sign, &error);
+		if (error) {
+			printf("Root signature error: %s\n", (char*)error->GetBufferPointer());
+		}
 		hr = m_Device->CreateRootSignature(0, sign->GetBufferPointer(), sign->GetBufferSize(), IID_PPV_ARGS(&m_RootSignature));
 	}
 	//create pipeline state
@@ -216,10 +209,10 @@ void gfx_dx::DXengine::LoadAssets(){
 		hr = D3DCompileFromFile(L"Shader/hlsl/Color.hlsl", nullptr, nullptr, "VSMain", "vs_5_1", compileFlags, 0, &vertexShader, &vsErrors);
 		hr = D3DCompileFromFile(L"Shader/hlsl/Color.hlsl", nullptr, nullptr, "PSMain", "ps_5_1", compileFlags, 0, &pixelShader, &psErrors);
 		if (vsErrors) {
-			printf("Errors in vertex shader\n %s\n", vsErrors->GetBufferPointer());
+			printf("Errors in vertex shader\n %s\n", (char*)vsErrors->GetBufferPointer());
 		}
 		if (psErrors) {
-			printf("Errors in pixel shader\n %s\n", psErrors->GetBufferPointer());
+			printf("Errors in pixel shader\n %s\n", (char*)psErrors->GetBufferPointer());
 		}
 		//create input layout
 		D3D12_INPUT_ELEMENT_DESC inputDesc[] = 
@@ -244,48 +237,7 @@ void gfx_dx::DXengine::LoadAssets(){
 	}
 
 	hr = m_Device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, m_CommandAllocator.Get(), m_Pipeline.Get() , IID_PPV_ARGS(&m_GFXCommandList));
-	//CommandList default to open state but is required to be closed in main loop
-	//m_GFXCommandList->Close();
-	//create ibo
-	{
-		UINT32 indices[] = { 1, 0, 2, 1, 2 ,3 };
-		hr = m_Device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(sizeof(indices)), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_IBO));
-		UINT32* data;
-		m_IBO->Map(0, nullptr, (void**)&data);
-		memcpy(data, indices, sizeof(indices));
-
-		m_IBOView.BufferLocation = m_IBO->GetGPUVirtualAddress();
-		m_IBOView.Format = DXGI_FORMAT_R32_UINT;
-		m_IBOView.SizeInBytes = sizeof(indices);
-	}
-	//create vbo
-	{
-		//create geometry
-		Vertex vertices[] = {
-			{ glm::vec3(-0.5f,	 0.5f, 0) , glm::vec2(0,0) }, //v0
-			{ glm::vec3(-0.5f,	-0.5f, 0), glm::vec2(0,1)  }, //v1
-			{ glm::vec3( 0.5f,	 0.5f, 0)  , glm::vec2(1,0)  }, //v2
-			{ glm::vec3( 0.5f,	-0.5f, 0) , glm::vec2(1,1) } //v3
-		};
-
-		const UINT vertexBufferSize = sizeof(vertices);
-
-		hr = m_Device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-			&CD3DX12_RESOURCE_DESC::Buffer(vertexBufferSize), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_VBO));
-		//copy data
-		UINT8* vertexDataBegin;
-		m_VBO->Map(0, nullptr, reinterpret_cast<void**>(&vertexDataBegin));
-		memcpy(vertexDataBegin, vertices, vertexBufferSize);
-		m_VBO->Unmap(0, nullptr);
-
-		//set up view
-		m_VBOView.BufferLocation = m_VBO->GetGPUVirtualAddress();
-		m_VBOView.StrideInBytes = sizeof(Vertex);
-		m_VBOView.SizeInBytes = vertexBufferSize;
-	}
-
-
+	
 	ComPtr<ID3D12Resource> textureUploadHeap;
 	unsigned char* texData;
 	//create texture
@@ -341,16 +293,16 @@ void gfx_dx::DXengine::LoadAssets(){
 	}
 	//create cbuffer
 	hr = m_Device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer(1024 * 64), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_ConstantBuffer));
-
-	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
-	cbvDesc.BufferLocation = m_ConstantBuffer->GetGPUVirtualAddress();
-	cbvDesc.SizeInBytes = (sizeof(cbuffer) + 255) & ~255;
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeof(PerFrame)), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_PerFrameBuffer));
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE handle(m_CbvSrvUavHeap->GetCPUDescriptorHandleForHeapStart());
-	handle.Offset(1, m_HeapDescSize);
+	handle.Offset(2, m_HeapDescSize);
+
+	D3D12_CONSTANT_BUFFER_VIEW_DESC cbvDesc = {};
+	cbvDesc.BufferLocation = m_PerFrameBuffer->GetGPUVirtualAddress();
+	cbvDesc.SizeInBytes = sizeof(PerFrame);
 	m_Device->CreateConstantBufferView(&cbvDesc, handle);
-	
+
 	//execute cmdlist
 	hr = m_GFXCommandList->Close();
 	ID3D12CommandList* ppCommandList[] = { m_GFXCommandList.Get() };
@@ -377,4 +329,8 @@ void gfx_dx::DXengine::LoadAssets(){
 
 	m_FrameIndex = m_SwapChain->GetCurrentBackBufferIndex();
 	SOIL_free_image_data(texData);
+}
+
+gfx_dx::RenderQueue* gfx_dx::DXengine::GetRenderQueue() {
+	return m_RenderQueue;
 }

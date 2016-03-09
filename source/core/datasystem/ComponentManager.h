@@ -13,7 +13,7 @@ public:
 	void RemoveComponent(Entity& ent, uint type);
 	int GetBuffer(void** outBuffer, uint type);
 	void* GetComponent(Entity& ent, uint type);
-
+	void PrintInfo();
 private:
 	ComponentManager();
 	void CreateComponentBuffer(uint count, uint componentSize, uint id);

@@ -1,10 +1,6 @@
 #pragma once
-#include <glm/glm.hpp>
-#include <physics/PhysicsObject.h>
+#include <Bullet/btBulletCollisionCommon.h>
 struct CollisionComponent {
-	bool Hit;
-	glm::vec3 CollisionPoint;
-	unsigned int EntityUID;
-	PhysicsObject* PhysObject;
+	btCollisionObject* CollisionObject;
 	static unsigned int Flag;
 };

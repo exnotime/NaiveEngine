@@ -36,7 +36,7 @@ GraphicsEngine::~GraphicsEngine() {
 	SAFE_DELETE(m_DecalProgram);
 	SAFE_DELETE(m_BloomProgram);
 	SAFE_DELETE(m_TransparencyProgram);
-	SAFE_DELETE(m_SSAOProgram);
+	//SAFE_DELETE(m_SSAOProgram);
 	SAFE_DELETE(m_CascadedShadowMap);
 }
 
@@ -69,10 +69,11 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	m_GBuffer = new GBuffer( );
 	m_GBuffer->Initialize( m_GraphicsSettings.Width, m_GraphicsSettings.Height );
 	// integrate ibl
+	int iblTexSize = 256;
 	m_IntegratedIBL = 0;
 	glGenTextures( 1, &m_IntegratedIBL );
 	glBindTexture( GL_TEXTURE_2D, m_IntegratedIBL );
-	glTexImage2D( GL_TEXTURE_2D, 0, GL_RG16, 1024, 1024, 0, GL_RG, GL_FLOAT, nullptr );
+	glTexImage2D( GL_TEXTURE_2D, 0, GL_RG16, iblTexSize, iblTexSize, 0, GL_RG, GL_FLOAT, nullptr );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST );
 	glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
@@ -82,7 +83,7 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle( m_PreFilterIblCompute );
 	prog->Apply();
 	glBindImageTexture( 0, m_IntegratedIBL, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RG16 );
-	const GLuint x = 1024 / 16;
+	const GLuint x = iblTexSize / 16;
 	glDispatchCompute( x, x, 1 );
 	glUseProgram( 0 );
 	// LightEngine
@@ -115,8 +116,10 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	m_SkyProgram = new SkyProgram();
 	m_SkyProgram->Init();
 	m_SkyProgram->SetSkyTexture("asset/sky/ame_iceflats.dds");
-	m_SSAOProgram = new SSAOProgram();
-	m_SSAOProgram->Initialize(m_GraphicsSettings.Width * 0.5f, m_GraphicsSettings.Height * 0.5f, 32, 8);
+
+	//m_SSAOProgram = new SSAOProgram();
+	//m_SSAOProgram->Initialize(m_GraphicsSettings.Width * 0.5f, m_GraphicsSettings.Height * 0.5f, 32, 16);
+
 	m_CascadedShadowMap = new CascadedShadowMap();
 	m_CascadedShadowMap->Initialize();
 }
@@ -205,7 +208,7 @@ void GraphicsEngine::DrawGeometry() {
 }
 
 void GraphicsEngine::DrawLight() {
-	m_SSAOProgram->Render(m_GBuffer, m_RenderQueue);
+	//m_SSAOProgram->Render(m_GBuffer, m_RenderQueue);
 	m_GBuffer->ApplyLightingStage();
 	g_LightEngine.BuildBuffer();
 
@@ -227,7 +230,7 @@ void GraphicsEngine::DrawLight() {
 
 	m_SkyCubeTex->Apply(prog->FetchUniform("g_SkyCubeTex"), 6);
 	m_IrrCubeTex->Apply(prog->FetchUniform("g_IrradianceCubeTex"), 7);
-	prog->SetUniformTextureHandle("g_SSAOTex", m_SSAOProgram->GetTexture(), 8);
+	//prog->SetUniformTextureHandle("g_SSAOTex", m_SSAOProgram->GetTexture(), 8);
 
 	prog->SetUniformMat4("gLightMatrix", m_ShadowMap->GetLightMatrix());
 	prog->SetUniformUInt( "numDLights",		  g_LightEngine.GetDirLightCount() );

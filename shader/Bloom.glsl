@@ -11,7 +11,7 @@ layout(local_size_x = 32, local_size_y = 32) in;
 
 uniform sampler2D 	g_BluredBloomTex;
 uniform	sampler2D	g_ColorBuffer;
-uniform float g_BloomAmount = 0.5;
+uniform float g_BloomAmount = 0.25;
 layout(rgba8, binding = 0) writeonly restrict uniform image2D output_img;
 uniform vec2 		g_ScreenSize;
 void main(){

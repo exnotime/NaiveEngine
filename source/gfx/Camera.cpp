@@ -85,8 +85,13 @@ const glm::mat4 gfx::Camera::GetViewProjection() const {
 	return m_CamData.Proj * m_CamData.View;
 }
 
-const gfx::CameraData& gfx::Camera::GetData() const {
-	return m_CamData;
+const gfx::CameraData gfx::Camera::GetData() const {
+	gfx::CameraData cd;
+	cd = m_CamData;
+	cd.Right = GetRight();
+	cd.Forward = GetForward();
+	cd.Up = GetUp();
+	return cd;
 }
 
 glm::vec3& gfx::Camera::GetEditablePosition() {

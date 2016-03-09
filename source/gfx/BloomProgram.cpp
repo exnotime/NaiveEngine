@@ -34,7 +34,7 @@ void gfx::BloomProgram::Render(){
 	GLuint WorkGroupSizeY = GLuint((m_Height + WORK_GROUP_SIZE - 1) / float(WORK_GROUP_SIZE));
 	prog->SetUniformTextureHandle("g_Image", m_TargetTex, 1);
 	prog->SetUniformVec2("g_ScreenSize", glm::vec2(m_Width, m_Height));
-	prog->SetUniformFloat("g_Threshold", 0.4f);
+	prog->SetUniformFloat("g_Threshold", 0.6f);
 	prog->SetUniformFloat("g_Smoothness", 0.8f);
 	glBindImageTexture(0, m_BloomTexture, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 	glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
@@ -64,5 +64,5 @@ void gfx::BloomProgram::SetTargetTexture(GLuint targetTex){
 	//resize texture
 	glBindTexture(GL_TEXTURE_2D, m_BloomTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr);
-	m_BlurProgram->SetTargetTexture(m_BloomTexture, 0.25f);
+	m_BlurProgram->SetTargetTexture(m_BloomTexture, 0.5f);
 }

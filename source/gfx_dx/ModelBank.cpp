@@ -1,9 +1,17 @@
 #include "ModelBank.h"
+#include "d3dx12.h"
 using namespace gfx_dx;
 
 ModelBank::ModelBank() {
 	m_Numerator	= 0;
-	m_IndexBuffer = 0;
+	//create input layout
+	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
+		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	};
+	memcpy(m_InputLayout, &inputLayout, sizeof(inputLayout));
 }
 
 ModelBank::~ModelBank() {
@@ -140,14 +148,12 @@ void ModelBank::Clear() {
 	m_Models.clear();
 	m_Vertices.clear();
 	m_Indices.clear();
-	//glDeleteBuffers(1, &m_IndexBuffer);
-	//m_VertexBuffer.Release();
 	m_Numerator = 0;
 	m_Vertices.clear();
 	m_Indices.clear();
 }
 
-void ModelBank::BuildBuffers() {
+void ModelBank::BuildBuffers(ID3D12Device* device) {
 	if (m_VerticesWhenLastBuilt == (int)m_Vertices.size())
 		return;
 	m_VerticesWhenLastBuilt = (int)m_Vertices.size();
@@ -155,22 +161,30 @@ void ModelBank::BuildBuffers() {
 		return;
 	}
 	//// Vertex buffers
-	//m_VertexBuffer.Init(POS_NORMAL_TEX_TANGENT, &m_Vertices[0], (int)m_Vertices.size() * sizeof(VertexPosNormalTexTangent));
+	m_VertexBuffer.Init(device, &m_Vertices[0], (int)m_Vertices.size());
 	////IndexBuffers
-	//int staticId = 0;
-	//for (std::map<ModelHandle, Model>::iterator it = m_Models.begin(); it != m_Models.end(); ++it) {
-	//	it->second.IndexHandle = staticId;
-	//	staticId += it->second.NumIndices;
-	//}
-	//if (m_IndexBuffer == 0)
-	//	glGenBuffers( 1, &m_IndexBuffer );
-	//glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer );
-	//glBufferData( GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int)* m_Indices.size( ), &m_Indices[0], GL_STATIC_DRAW );
+	int staticId = 0;
+	for (std::map<ModelHandle, Model>::iterator it = m_Models.begin(); it != m_Models.end(); ++it) {
+		it->second.IndexHandle = staticId;
+		staticId += it->second.NumIndices;
+	}
+	HRESULT hr = device->CreateCommittedResource(&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD), D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(m_Indices.size() * sizeof(UINT32)), D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&m_IndexBuffer));
+	UINT32* data;
+	m_IndexBuffer->Map(0, nullptr, (void**)&data);
+	memcpy(data, m_Indices.data(), m_Indices.size() * sizeof(UINT32));
+	m_IndexBuffer->Unmap(0, nullptr);
+
+	m_IBOView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
+	m_IBOView.Format = DXGI_FORMAT_R32_UINT;
+	m_IBOView.SizeInBytes = m_Indices.size() * sizeof(UINT32);
+
+
 }
 
-void ModelBank::ApplyBuffers() {
-	//m_VertexBuffer.Apply();
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
+void ModelBank::ApplyBuffers(ID3D12GraphicsCommandList* cmdList) {
+	m_VertexBuffer.Apply(0, cmdList);
+	cmdList->IASetIndexBuffer(&m_IBOView);
 }
 
 std::vector<Vertex>& ModelBank::GetVertices() {
@@ -187,4 +201,12 @@ ID3D12Resource* ModelBank::GetIndexBuffer( ) {
 
 void ModelBank::UpdateModel(ModelHandle& handle, Model& model) {
 	m_Models[handle] = model;
+}
+
+D3D12_INPUT_LAYOUT_DESC* ModelBank::GetInputLayout() {
+	return m_InputLayout;
+}
+
+int ModelBank::GetInputLayoutCount() {
+	return _countof(m_InputLayout);
 }

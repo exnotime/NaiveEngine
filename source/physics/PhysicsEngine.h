@@ -12,7 +12,8 @@ public:
 	~PhysicsEngine();
 	PHYSICS_API static PhysicsEngine& GetInstance();
 	PHYSICS_API void Init();
-	PHYSICS_API btRigidBody* AddPhysicsObject(BASIC_SHAPE shape, float mass, glm::vec3 pos, glm::vec3 size);
+	PHYSICS_API btRigidBody* AddPhysicsShape(BASIC_SHAPE shape, float mass, glm::vec3 pos, glm::vec3 size);
+	PHYSICS_API btCollisionObject* AddCollisionShape(BASIC_SHAPE shape, float mass, glm::vec3 pos, glm::vec3 size);
 	PHYSICS_API void Update(const float deltatime);
 	PHYSICS_API void Shutdown();
 private:

@@ -1,5 +1,5 @@
 #include "EntityManager.h"
-
+#include <imgui/imgui.h>
 EntityManager::EntityManager(){}
 
 EntityManager::~EntityManager(){}
@@ -21,10 +21,14 @@ Entity& EntityManager::CreateEntity() {
 void EntityManager::RemoveEntity(Entity& entity) {
 	//potentially slow
 	for (std::vector<Entity>::iterator it = m_Entities.begin(); it != m_Entities.end(); it++) {
-		if (it._Ptr->UID = entity.UID) {
+		if (it._Ptr->UID == entity.UID) {
 			m_Entities.erase(it);
 		}
 	}
+}
+
+void EntityManager::PrintInfo() {
+	ImGui::Text("EntityCount: %d", m_Entities.size());
 }
 
 std::vector<Entity>& EntityManager::GetEntityList() {

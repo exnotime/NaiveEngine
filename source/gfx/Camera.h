@@ -88,7 +88,7 @@ class GFX_API Camera {
 	const glm::mat4&		GetProjection() const;
 	// WARNING: Does calculations. Call as few times as possible.
 	const glm::mat4			GetViewProjection() const;
-	const CameraData&		GetData() const;
+	const CameraData		GetData() const;
 
 	glm::vec3&				GetEditablePosition();
 

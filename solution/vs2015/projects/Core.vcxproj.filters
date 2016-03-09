@@ -36,6 +36,9 @@
     <ClInclude Include="..\..\..\source\core\Input\Input.h">
       <Filter>core\Input</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\Timer.h">
+      <Filter>core</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\source\core\Window.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -115,6 +118,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\Input\Input.cpp">
       <Filter>core\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\Timer.cpp">
+      <Filter>core</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\Window.cpp">
       <Filter>core</Filter>

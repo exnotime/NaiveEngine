@@ -1,12 +1,14 @@
 #include "SSAOProgram.h"
 #include "ShaderBank.h"
+#include <utility/Randomizer.h>
 using namespace gfx;
 
 float RandfUNORM() {
-	return (rand() % RAND_MAX) / float(RAND_MAX);
+	return (g_Randomizer.UserRand() % RAND_MAX) / float(RAND_MAX);
 }
 float RandfNORM() {
-	return (rand() % RAND_MAX) / float(RAND_MAX) * 2.0f - 1.0f;
+	
+	return ((g_Randomizer.UserRand() % RAND_MAX) / float(RAND_MAX)) * 2.0f - 1.0f;
 }
 
 SSAOProgram::SSAOProgram() {
@@ -39,23 +41,25 @@ void SSAOProgram::Initialize(int width, int height, int kernelSize, int noiseSiz
 	}
 	glGenTextures(1, &m_NoiseTexture);
 	glBindTexture(GL_TEXTURE_2D, m_NoiseTexture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, noiseSize, noiseSize, 0, GL_RGB, GL_FLOAT, noise);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, noiseSize, noiseSize, 0, GL_RGB, GL_FLOAT, noise);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_WRAP_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_WRAP_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	delete[] noise;
 	//create ssao texture
 	glGenTextures(1, &m_SSAOTex);
 	glBindTexture(GL_TEXTURE_2D, m_SSAOTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_R8, width, height, 0, GL_RED, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 
 	m_BlurProgram = new BlurProgram();
 	m_BlurProgram->Initlialize();
-	m_BlurProgram->SetTargetTexture(m_SSAOTex, 1.0f);
+	m_BlurProgram->SetTargetTexture(m_SSAOTex, 0.5f);
 }
 void SSAOProgram::Render(GBuffer* gbuffer, RenderQueue* rq) {
 	CameraData cam = rq->GetViews()[0].camera;
@@ -70,11 +74,13 @@ void SSAOProgram::Render(GBuffer* gbuffer, RenderQueue* rq) {
 	prog->SetUniformVec2("gScreenSize", m_Size);
 	prog->SetUniformFloat("gTanHalfFOV", tan(cam.Fov * 0.5f));
 	prog->SetUniformFloat("gAspectRatio", m_Size.x / m_Size.y);
+	prog->SetUniformFloat("gNear", cam.Near);
+	prog->SetUniformFloat("gFar", cam.Far);
 	prog->SetUniformMat4("gProj", cam.Proj);
-	prog->SetUniformMat4("gView", cam.ProjView);
+	prog->SetUniformMat4("gViewProj", cam.View);
 	prog->SetUniformUInt("gKernelSize", m_KernelSize);
 	glUniform3fv(prog->FetchUniform("gKernel"), m_KernelSize, (float*)m_Kernel);
-	glBindImageTexture(0, m_SSAOTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_R8);
+	glBindImageTexture(0, m_SSAOTex, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA8);
 	glDispatchCompute(WorkGroupSizeX, WorkGroupSizeY, 1);
 	m_BlurProgram->Render(2);
 }

@@ -5,6 +5,7 @@
 #include "../components/RigidBodyComponent.h"
 #include "../components/CollisionComponent.h"
 #include <cmath>
+#include <imgui/imgui.h>
 ComponentManager::ComponentManager() {
 
 }
@@ -90,4 +91,13 @@ void ComponentManager::CreateComponentBuffer(uint count, uint componentSize, uin
 	ComponentBuffer buffer;
 	buffer.CreateBuffer(count, componentSize);
 	m_Buffers[id] = buffer;
+}
+
+void ComponentManager::PrintInfo() {
+	ImGui::Text("ComponentBufferCount: %d", m_Buffers.size());
+	int i = 0;
+	for (auto& buffer : m_Buffers) {
+		ImGui::Text("Buffer%d: %d", i, buffer.second.GetListSize());
+		i++;
+	}
 }
