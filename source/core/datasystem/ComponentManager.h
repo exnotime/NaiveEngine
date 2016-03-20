@@ -11,12 +11,13 @@ public:
 
 	void CreateComponent(const void* comp, Entity& ent, uint type);
 	void RemoveComponent(Entity& ent, uint type);
+	void RemoveComponents(Entity& ent);
 	int GetBuffer(void** outBuffer, uint type);
 	void* GetComponent(Entity& ent, uint type);
 	void PrintInfo();
 private:
 	ComponentManager();
-	void CreateComponentBuffer(uint count, uint componentSize, uint id);
+	void CreateComponentBuffer(uint count, uint componentSize, uint id, std::string name);
 
 	std::map<unsigned int,ComponentBuffer>	m_Buffers;
 	int								m_ComponentTypeCount;

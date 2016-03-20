@@ -3,40 +3,39 @@
 #include "../components/PlacementComponent.h"
 #include "../components/ModelComponent.h"
 #include "../components/RigidBodyComponent.h"
-#include "../components/CollisionComponent.h"
+#include "../components/LightComponent.h"
 #include <cmath>
 #include <imgui/imgui.h>
 ComponentManager::ComponentManager() {
 
 }
 
-ComponentManager::~ComponentManager(){
+ComponentManager::~ComponentManager() {
 	//release all buffers
 	for (auto& buffer : m_Buffers) {
 		buffer.second.DestroyBuffer();
 	}
 }
 
-ComponentManager& ComponentManager::GetInstance(){
+ComponentManager& ComponentManager::GetInstance() {
 	static ComponentManager instance;
 	return instance;
 }
 
-void ComponentManager::Init(){
+void ComponentManager::Init() {
 	//create Buffers for components in the game
-	CreateComponentBuffer(100, sizeof(PlacementComponent), PlacementComponent::Flag);
-	CreateComponentBuffer(100, sizeof(ModelComponent), ModelComponent::Flag);
-	CreateComponentBuffer(100, sizeof(RigidBodyComponent), RigidBodyComponent::Flag);
-	CreateComponentBuffer(100, sizeof(CollisionComponent), CollisionComponent::Flag);
-	CreateComponentBuffer(1, sizeof(CameraComponent), CameraComponent::Flag);
-} 
+	CreateComponentBuffer(20, sizeof(PlacementComponent), PlacementComponent::Flag, "Placement");
+	CreateComponentBuffer(20, sizeof(ModelComponent), ModelComponent::Flag, "Model");
+	CreateComponentBuffer(20, sizeof(RigidBodyComponent), RigidBodyComponent::Flag, "RigidBody");
+	CreateComponentBuffer(20, sizeof(LightComponent), LightComponent::Flag, "Light");
+	CreateComponentBuffer(1, sizeof(CameraComponent), CameraComponent::Flag, "Camera");
+}
 
 
 void ComponentManager::CreateComponent(const void* comp, Entity& ent, uint type) {
 	auto& buffer = m_Buffers.find(type);
 	if (buffer != m_Buffers.end()) {
 		int index = buffer->second.AddComponent(comp);
-
 		if (ent.Components.size() < m_Buffers.size()) {
 			ent.Components.resize(m_Buffers.size());
 		}
@@ -60,6 +59,17 @@ void ComponentManager::RemoveComponent(Entity& ent, uint type) {
 	}
 }
 
+void ComponentManager::RemoveComponents(Entity& ent) {
+	unsigned int compFlag = 1;
+	for (int i = 0; i < m_Buffers.size(); i++) {
+		if ((ent.ComponentBitfield & compFlag) == compFlag){
+			RemoveComponent(ent, compFlag);
+		}
+		compFlag = compFlag << 1;
+	}
+	
+}
+
 int ComponentManager::GetBuffer(void** outBuffer, uint type) {
 	auto buffer = m_Buffers.find(type);
 
@@ -79,7 +89,8 @@ void* ComponentManager::GetComponent(Entity& ent, uint type) {
 	auto buffer = m_Buffers.find(type);
 
 	if (buffer != m_Buffers.end()) {
-		return buffer->second.GetComponent(ent.Components[log2(type)]);
+		void* comp = buffer->second.GetComponent(ent.Components[log2(type)]);
+		return comp;
 	}
 	else {
 		printf("Error getting component\n");
@@ -87,17 +98,15 @@ void* ComponentManager::GetComponent(Entity& ent, uint type) {
 	}
 }
 
-void ComponentManager::CreateComponentBuffer(uint count, uint componentSize, uint id) {
+void ComponentManager::CreateComponentBuffer(uint count, uint componentSize, uint id, std::string name) {
 	ComponentBuffer buffer;
-	buffer.CreateBuffer(count, componentSize);
+	buffer.CreateBuffer(count, componentSize, name);
 	m_Buffers[id] = buffer;
 }
 
 void ComponentManager::PrintInfo() {
 	ImGui::Text("ComponentBufferCount: %d", m_Buffers.size());
-	int i = 0;
 	for (auto& buffer : m_Buffers) {
-		ImGui::Text("Buffer%d: %d", i, buffer.second.GetListSize());
-		i++;
+		ImGui::Text("%sbuffer: %d", buffer.second.GetName().c_str(), buffer.second.GetListSize());
 	}
 }

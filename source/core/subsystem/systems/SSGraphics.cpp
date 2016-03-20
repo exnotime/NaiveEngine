@@ -8,6 +8,7 @@
 #include "../../components/PlacementComponent.h"
 #include "../../components/ModelComponent.h"
 #include "../../components/CameraComponent.h"
+#include "../../components/LightComponent.h"
 SSGraphics::SSGraphics() {
 
 }
@@ -24,7 +25,6 @@ void SSGraphics::Startup() {
 	m_GFXEngine->Initialize(gs);
 	m_RenderQueue = m_GFXEngine->GetRenderQueue();
 	m_Model = gfx::g_ModelBank.LoadModel("asset/model/cube.obj");
-	
 }
 
 void SSGraphics::Update(const float deltaTime) {
@@ -62,6 +62,17 @@ void SSGraphics::Update(const float deltaTime) {
 	dl.Direction = glm::vec3(0, -0.9f, 0.1f);
 	gfx::g_LightEngine.AddDirLightToQueue(dl);
 
+	flag = LightComponent::Flag | PlacementComponent::Flag;
+
+	for (auto& entity : g_EntityManager.GetEntityList()){
+		if ((entity.ComponentBitfield & flag) == flag) {
+			//TODO: make a switch for different lights
+			LightComponent* lc = (LightComponent*)g_ComponentManager.GetComponent(entity, LightComponent::Flag);
+			PlacementComponent* pc = (PlacementComponent*)g_ComponentManager.GetComponent(entity, PlacementComponent::Flag);
+			lc->Light.Position = pc->Position;
+			gfx::g_LightEngine.AddPointLightToQueue(lc->Light);
+		}
+	}
 
 	m_GFXEngine->Draw();
 	m_RenderQueue->Clear();

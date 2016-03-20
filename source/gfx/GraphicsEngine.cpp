@@ -30,14 +30,14 @@ GraphicsEngine::~GraphicsEngine() {
 	SAFE_DELETE(m_GBuffer);
 	SAFE_DELETE(m_SkyCubeTex);
 	SAFE_DELETE(m_IrrCubeTex);
-	SAFE_DELETE(m_ShadowMap);
+	//SAFE_DELETE(m_ShadowMap);
 	SAFE_DELETE(m_SkyProgram);
 	SAFE_DELETE(m_TerrainDeform);
 	SAFE_DELETE(m_DecalProgram);
 	SAFE_DELETE(m_BloomProgram);
 	SAFE_DELETE(m_TransparencyProgram);
 	//SAFE_DELETE(m_SSAOProgram);
-	SAFE_DELETE(m_CascadedShadowMap);
+	//SAFE_DELETE(m_CascadedShadowMap);
 }
 
 void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
@@ -51,6 +51,7 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	glFrontFace( GL_CCW );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_STENCIL_TEST );
+	glEnable(GL_FRAMEBUFFER_SRGB);
 	glStencilFunc( GL_ALWAYS, 1, 0xFF );
 	glEnable( GL_TEXTURE_CUBE_MAP_SEAMLESS );
 
@@ -92,8 +93,8 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	// Bind buffer
 	g_BufferManager.BindBufferToProgram( "ShaderInputs", g_ShaderBank.GetProgramFromHandle( m_DeferedGeometryShader ), 0 );
 	// ShadowMap
-	m_ShadowMap = new ShadowMap( );
-	m_ShadowMap->Init();
+	//m_ShadowMap = new ShadowMap( );
+	//m_ShadowMap->Init();
 	//terrain deform
 	m_TerrainDeform = new TerrainDeformationProgram( );
 	m_TerrainDeform->Initialize();
@@ -120,8 +121,8 @@ void GraphicsEngine::Initialize(const GraphicsSettings& settings) {
 	//m_SSAOProgram = new SSAOProgram();
 	//m_SSAOProgram->Initialize(m_GraphicsSettings.Width * 0.5f, m_GraphicsSettings.Height * 0.5f, 32, 16);
 
-	m_CascadedShadowMap = new CascadedShadowMap();
-	m_CascadedShadowMap->Initialize();
+	//m_CascadedShadowMap = new CascadedShadowMap();
+	//m_CascadedShadowMap->Initialize();
 }
 
 void GraphicsEngine::Deinitialize() {
@@ -151,11 +152,11 @@ void GraphicsEngine::DrawGeometry() {
 	m_TerrainDeform->Render(m_RenderQueue);
 	//Shadows
 	//temp hack
-	if(g_LightEngine.GetDirLightCount() > 0)
-		m_ShadowMap->SetLight( g_LightEngine.GetDirLightList().at( 0 ) );
+	//if(g_LightEngine.GetDirLightCount() > 0)
+		//m_ShadowMap->SetLight( g_LightEngine.GetDirLightList().at( 0 ) );
 
 	m_RenderQueue->UpdateBuffer();
-	m_ShadowMap->Render( m_RenderQueue );
+	//m_ShadowMap->Render( m_RenderQueue );
 	//Geometry
 	m_GBuffer->ApplyGeometryStage();
 	m_GBuffer->ClearScreen();
@@ -222,7 +223,7 @@ void GraphicsEngine::DrawLight() {
 	prog->SetUniformTextureHandle( "gDepthBuffer",		m_GBuffer->GetTexture( GBUFFER_TEX::DEPTH_SENCIL32 ),	 3 );
 	prog->SetUniformTextureHandle( "g_BRDFTex",			m_IntegratedIBL,										 4 );
 
-	prog->SetUniformTextureHandle( "g_ShadowMap",		m_ShadowMap->GetTexture(),								 5 );
+	//prog->SetUniformTextureHandle( "g_ShadowMap",		m_ShadowMap->GetTexture(),								 5 );
 	//glActiveTexture(GL_TEXTURE5);
 	//glBindTexture(GL_TEXTURE_2D_ARRAY, m_CascadedShadowMap->GetTexture());
 	//glUniformMatrix4fv(prog->FetchUniform("gLightMatrices"), 4, GL_FALSE, (float*)(m_CascadedShadowMap->GetLightMatrices()));
@@ -232,7 +233,7 @@ void GraphicsEngine::DrawLight() {
 	m_IrrCubeTex->Apply(prog->FetchUniform("g_IrradianceCubeTex"), 7);
 	//prog->SetUniformTextureHandle("g_SSAOTex", m_SSAOProgram->GetTexture(), 8);
 
-	prog->SetUniformMat4("gLightMatrix", m_ShadowMap->GetLightMatrix());
+	//prog->SetUniformMat4("gLightMatrix", m_ShadowMap->GetLightMatrix());
 	prog->SetUniformUInt( "numDLights",		  g_LightEngine.GetDirLightCount() );
 	prog->SetUniformUInt( "gTotalLightCount", g_LightEngine.GetPointLightCount() );
 
@@ -254,7 +255,6 @@ void GraphicsEngine::DrawLight() {
 		glDispatchCompute( WorkGroupSizeX, WorkGroupSizeY, 1 );
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindTexture(GL_TEXTURE_2D_ARRAY, 0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glUseProgram( 0 );
 }
@@ -266,6 +266,7 @@ void GraphicsEngine::DrawPostFX() {
 	glDisable( GL_DEPTH_TEST );
 	ShaderProgram* prog = g_ShaderBank.GetProgramFromHandle(m_FXAAShader);
 	prog->Apply();
+	//prog->SetUniformTextureHandle("InputTex", m_GBuffer->GetTexture(GBUFFER_TEX::COLLECTIVE24), 0);
 	prog->SetUniformTextureHandle("InputTex", m_BloomProgram->GetFinalTexture(), 0);
 	//prog->SetUniformTextureHandle("InputTex", m_SSAOProgram->GetTexture(), 0);
 	prog->SetUniformVec2("ScreenSize", glm::vec2(m_GraphicsSettings.Width, m_GraphicsSettings.Height));

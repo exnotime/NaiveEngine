@@ -2,11 +2,11 @@
 #version 430
 #define WORK_GROUP_SIZE 16
 layout(local_size_x = WORK_GROUP_SIZE, local_size_y = WORK_GROUP_SIZE) in;
-#pragma optionNV(fastmath on)
-#pragma optionNV(ifcvt none)
-#pragma optionNV(inline all)
-#pragma optionNV(strict on)
-#pragma optionNV(unroll all)
+//#pragma optionNV(fastmath on)
+//#pragma optionNV(ifcvt none)
+//#pragma optionNV(inline all)
+//#pragma optionNV(strict on)
+//#pragma optionNV(unroll all)
 
 //GBuffers
 layout(binding = 0) uniform sampler2D gAlbedoBuffer;
@@ -150,6 +150,7 @@ void main()
 	float zFar 	= gProj[3][2] / (gProj[2][2] + 1.0f);
 	float clipDelta = zFar - zNear;
 
+	//depth = 2.0 * zNear * zFar / (zFar + zNear - depth * (zFar - zNear));
 	vec2 viewPortUV = vec2(gl_GlobalInvocationID.xy) / vec2(gViewportSize - 1);
 	//Worldpos
 	vec4 sPos = vec4(viewPortUV * 2 - 1, depth, 1);
@@ -234,7 +235,7 @@ void main()
 		return;
 	}
 
-	vec3 normal = texelFetch(gNormalBuffer, screenPos, 0).xyz * 2 - 1;
+	vec3 normal = texelFetch(gNormalBuffer, screenPos, 0).xyz;
 	normal = normalize(normal);
 
 	vec2 roughnessMetal = texelFetch(gRoughMetalBuffer, screenPos, 0).xy;
@@ -247,7 +248,7 @@ void main()
 	uint i;
 	for(i = 0; i < sPointLightCount; ++i){
 		Light p = lights[sPointLightIndex[i]];
-		lightColor += CalcPLight(p, normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y );
+		lightColor += CalcPLight(p, normal, posW.xyz, gCamPos.xyz, albedo.rgb, roughnessMetal.x, roughnessMetal.y );
 	}
 	for(i = 0; i < numDLights; ++i){
 		Light d = lights[MAX_POINTLIGHTS + i];
@@ -257,7 +258,7 @@ void main()
 	lightColor += CalcIBLLight( normal, posW.xyz, gCamPos.xyz, albedo.xyz, roughnessMetal.x, roughnessMetal.y, g_SkyCubeTex, g_IrradianceCubeTex, g_BRDFTex);
 	//lightColor *= (1.0 - AO);
 	float luma = dot( lightColor.rgb, vec3(0.299, 0.587, 0.114) );
-	vec4 outColor = vec4(Reinhard(lightColor.rgb), luma);
-	imageStore(output_img, screenPos, pow(outColor, vec4(1.0 / 2.2)));
+	vec4 outColor = vec4(lightColor.rgb, luma);
+	imageStore(output_img, screenPos, outColor);
 }
 #end_shader

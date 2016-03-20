@@ -1,4 +1,5 @@
 #include "EntityManager.h"
+#include "../datasystem/ComponentManager.h"
 #include <imgui/imgui.h>
 EntityManager::EntityManager(){}
 
@@ -20,9 +21,11 @@ Entity& EntityManager::CreateEntity() {
 
 void EntityManager::RemoveEntity(Entity& entity) {
 	//potentially slow
-	for (std::vector<Entity>::iterator it = m_Entities.begin(); it != m_Entities.end(); it++) {
-		if (it._Ptr->UID == entity.UID) {
-			m_Entities.erase(it);
+	for (int i = 0; i < m_Entities.size(); i++) {
+		if (m_Entities[i].UID == entity.UID) {
+			g_ComponentManager.RemoveComponents(m_Entities[i]);
+			m_Entities.erase( m_Entities.begin() + i);
+			return;
 		}
 	}
 }

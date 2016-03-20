@@ -9,6 +9,8 @@
 #include "subsystem/systems/SSGraphics.h"
 #include "subsystem/systems/SSStartup.h"
 #include "subsystem/systems/SSPhysics.h"
+#include "subsystem/systems/SSBullet.h"
+#include "subsystem/systems/SSMusic.h"
 #include "Input/Input.h"
 #include "../imgui/imgui.h"
 #include "../imgui/imgui_impl_glfw_gl3.h"
@@ -35,19 +37,17 @@ void Engine::Init() {
 	//set up window
 	m_Window = new Window();
 	WindowSettings ws;
-	ws.X = 500;
-	ws.Y = 250;
+	ws.X = 50;
+	ws.Y = 40;
 	ws.Width = 1600;
 	ws.Height = 900;
 	ws.HighDPI = true;
 	ws.OpenGL = true;
 	ws.Title = "NaiveEngine";
-	ws.Vsync = true;
+	ws.Vsync = false;
 	ws.BorderLess = false;
 	m_Window->Initialize(ws);
 	ImGui_ImplGlfwGL3_Init(m_Window->GetWindow(), true);
-	//m_DXEngine = new gfx_dx::DXengine();
-	//m_DXEngine->Init(glfwGetWin32Window(m_Window->GetWindow()), 1600, 900);
 
 	g_ComponentManager.Init();
 	glfwSetKeyCallback(m_Window->GetWindow(), KeyboardCallBack);
@@ -55,10 +55,12 @@ void Engine::Init() {
 	glfwSetCursorPosCallback(m_Window->GetWindow(), MousePosCallback);
 	g_Input.SetCursorMode(m_Window->GetWindow(), GLFW_CURSOR_DISABLED);
 
-	m_SubSystemSet.AddSubSystem(new SSPhysics(), 0, 0, 0);
-	m_SubSystemSet.AddSubSystem(new SSCamera(), 0, 1, 0);
-	m_SubSystemSet.AddSubSystem(new SSGraphics(), 0, 2, 0);
-	m_SubSystemSet.AddSubSystem(new SSStartup(), 0, 3, 0);
+	m_SubSystemSet.AddSubSystem(new SSPhysics(), 0, SUBSYSTEM_INPUT_ORDER, 0);
+	m_SubSystemSet.AddSubSystem(new SSCamera(), 0, SUBSYSTEM_INPUT_ORDER, 0);
+	m_SubSystemSet.AddSubSystem(new SSBullet(), 0, SUBSYSTEM_INPUT_ORDER, 0);
+	m_SubSystemSet.AddSubSystem(new SSGraphics(), 0, SUBSYSTEM_INPUT_ORDER, 0);
+	m_SubSystemSet.AddSubSystem(new SSMusic(), 0, SUBSYSTEM_INPUT_ORDER, 0);
+	m_SubSystemSet.AddSubSystem(new SSStartup(), 0, SUBSYSTEM_INPUT_ORDER, 0);
 	m_SubSystemSet.StartSubSystems();
 }
 

@@ -6,7 +6,7 @@
 #include "../../components/RigidBodyComponent.h"
 #include "../../Input/Input.h"
 #include "../../entity/EntityFactory.h"
-#define MOVE_SPEED 500.0f
+#define MOVE_SPEED 5.0f
 #define TURN_SPEED 0.0001f * 10.0f
 SSCamera::SSCamera() {
 
@@ -41,41 +41,38 @@ void SSCamera::Update(const float deltaTime) {
 				glm::vec3 f = cc->Camera.GetForward();
 				f.y = 0;
 				f = glm::normalize(f);
-				velocity += f * deltaTime * MOVE_SPEED;
+				velocity += f * MOVE_SPEED;
 			}
 			if (g_Input.IsKeyDown(GLFW_KEY_S)) {
 				glm::vec3 f = cc->Camera.GetForward();
 				f.y = 0;
 				f = glm::normalize(f);
-				velocity += f * deltaTime * MOVE_SPEED * -1.0f;
+				velocity += f * MOVE_SPEED * -1.0f;
 			}
 			if (g_Input.IsKeyDown(GLFW_KEY_A)) {
 				glm::vec3 f = cc->Camera.GetRight();
 				f.y = 0;
 				f = glm::normalize(f);
-				velocity += f * deltaTime * MOVE_SPEED * -1.0f;
+				velocity += f * MOVE_SPEED * -1.0f;
 			}
 			if (g_Input.IsKeyDown(GLFW_KEY_D)) {
 				glm::vec3 f = cc->Camera.GetRight();
 				f.y = 0;
 				f = glm::normalize(f);
-				velocity += f * deltaTime * MOVE_SPEED;
+				velocity += f * MOVE_SPEED;
 			}
 			if (g_Input.IsKeyDown(GLFW_KEY_SPACE)) {
-				velocity.y = 50 * deltaTime;
+				velocity.y = 0.1f;
 			}
 			//update placement
 			pc->World = cc->Camera.GetView();
 			pc->Orientation = glm::quat_cast(pc->World);
 			pc->Position = glm::vec3(pc->World[3]);
 			//update rigid body
-			rbc->Body->setLinearVelocity(btVector3(velocity.x, rbc->Body->getLinearVelocity().y() + velocity.y, velocity.z));
+			rbc->PhysOBJ->Body->setLinearVelocity(btVector3(velocity.x, rbc->PhysOBJ->Body->getLinearVelocity().y() + velocity.y, velocity.z));
 
 			cd = cc->Camera.GetData();
 		}
-	}
-	if (g_Input.IsMousebuttonDown(GLFW_MOUSE_BUTTON_1)) {
-		SpawnBullet(cd.Position + cd.Forward * 2.0f + cd.Right * -0.05f, cd.Forward, 1);
 	}
 }
 

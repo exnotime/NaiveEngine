@@ -97,7 +97,7 @@ void main(){
 	}
 	vec3 baseColor = pow(albedo.xyz, vec3(2.2)) * v_Out.Color.xyz; //raise to 2.2(gamma) to be in linear space
 
-	FragmentNormal = normalize(normal) * 0.5 + 0.5;
+	FragmentNormal = normalize(normal);
 	FragmentColor.xyz = baseColor;
 	FragmentColor.a = 1; //do light calculation
 	FragmentRoughMetal = vec2(roughness, metallic);

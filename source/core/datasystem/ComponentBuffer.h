@@ -1,12 +1,12 @@
 #pragma once
+#include <imgui/imgui.h>
 #include <malloc.h>
 #include <assert.h>
-#include <vector>
+#include <deque>
+#include <string>
 typedef  unsigned char Byte;
 typedef  unsigned int uint;
-/*
-	Components can only be of pure data types no pointers please
-*/
+
 class ComponentBuffer {
 public:
 	ComponentBuffer() {
@@ -16,15 +16,18 @@ public:
 
 	}
 
-	void CreateBuffer(uint count, uint size) {
+	void CreateBuffer(uint count, uint size, std::string name) {
 		m_Buffer = (Byte*)malloc(count * size);
 		assert(m_Buffer != nullptr);
+		memset(m_Buffer, 0, count * size);
 		m_Size = count;
 		m_ComponentSize = size;
+		m_Name = name;
 	}
 	void ResizeBuffer(uint newSize) {
 		m_Buffer = (Byte*)realloc(m_Buffer, newSize);
 		assert(m_Buffer != nullptr);
+		memset((Byte*)(m_Buffer) + (m_Size * m_ComponentSize), 0, m_Size * m_ComponentSize);
 		m_Size *= 2;
 	}
 
@@ -35,33 +38,39 @@ public:
 	uint AddComponent(const void* component) {
 		if (m_End == m_Size)
 			ResizeBuffer(m_ComponentSize * m_Size * 2);
-		uint index = m_End;
+		//find an index, if there is a hole get that instead of end
+		uint index;
+		if(!m_Holes.empty()){
+			index = m_Holes.front();
+			m_Holes.pop_front();
+		}else {
+			index = m_End;
+			m_End++;
+		}
+		//copy data
 		memcpy((unsigned char*)(m_Buffer) + index * m_ComponentSize, component, m_ComponentSize);
-		m_End++;
-		m_Handles.push_back(index);
-		return m_Handles.size() - 1;
+		m_Count++;
+		return index;
 	}
 
 	void RemoveComponent(uint index) {
-		if (m_Handles[index] > m_End) {
+		if (index >= m_End)
 			return;
-		} else if (m_Handles[index] == m_End) {
-			m_End--;
-		} else {
-			index = m_Handles[index];
-			//move end to new position
-			memcpy((unsigned char*)m_Buffer + index * m_ComponentSize, (unsigned char*)m_Buffer + m_End * m_ComponentSize, m_ComponentSize);
-			m_Handles[m_End] = index; //update handles
-			m_End--; //shorten end
-		}
-
+		//reset memory
+		memset((Byte*)m_Buffer + index * m_ComponentSize, 0, m_ComponentSize);
+		//add to holes queue
+		m_Holes.push_front(index);
+		m_Count--;
 	}
 
 	void* GetComponent(uint index) {
 		if (index >= m_Size)
 			return nullptr;
-		uint i = m_Handles[index];
-		return (unsigned char*)(m_Buffer) + i * m_ComponentSize;
+		for(auto& hole : m_Holes){
+			if(index == hole)
+				return nullptr;
+		}
+		return (unsigned char*)(m_Buffer) + index * m_ComponentSize;
 	}
 	
 	void* GetComponentList() {
@@ -69,13 +78,18 @@ public:
 	}
 
 	uint GetListSize() {
-		return m_End;
+		return m_Count;
+	}
+	std::string& GetName() {
+		return m_Name;
 	}
 
 private:
-	uint m_Size = 0;
-	uint m_End = 0;
-	uint m_ComponentSize = 0;
+	uint m_Size = 0; //sizeof memory allocated
+	uint m_End = 0; //end of current list
+	uint m_Count = 0; //number of alive components
+	uint m_ComponentSize = 0; //size of component in bytes
 	void* m_Buffer = nullptr;
-	std::vector<uint> m_Handles;
+	std::deque<uint> m_Holes;
+	std::string m_Name;
 };

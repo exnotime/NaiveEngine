@@ -39,7 +39,7 @@ int ShapeGenerator::GenerateModel(BASIC_SHAPE shape) {
 		par_shapes_compute_normals(mesh);
 		break;
 	case SPHERE_SUBDIV:
-		mesh = par_shapes_create_subdivided_sphere(4);
+		mesh = par_shapes_create_subdivided_sphere(5);
 		break;
 	case SPHERE_PARA:
 		mesh = par_shapes_create_parametric_sphere(32, 8);

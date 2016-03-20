@@ -6,7 +6,7 @@ struct Light
 	float Intensity;
 	vec3 Direction;
 	float Length;
-	vec3 Padd;
+	vec3 Attenuation;
 	float Range;
 };
 
@@ -267,8 +267,7 @@ vec4 CalcPLight( Light light, vec3 inNormal, vec3 posw, vec3 campos, vec3 baseCo
 	if(dist <= light.Range)
 	{
 		lightDir = normalize(lightDir);
-		vec3 toeye = normalize(campos - posw);
-		float att = light.Intensity / max(dist * dist, 0.0001f); //ty frostbite team;
+		float att = light.Intensity / (light.Attenuation.x + light.Attenuation.y * dist + light.Attenuation.z * dist * dist);
 		vec3 spec = vec3(0);
 		vec3 diff = vec3(0);
 		float ndotl = dot(inNormal, -lightDir);

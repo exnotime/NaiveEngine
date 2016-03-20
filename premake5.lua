@@ -38,7 +38,7 @@ solution "NaiveEngine"
 		defines { "GLM_FORCE_RADIANS" }
 		files { "source/core/**.h","source/core/**.cpp", "source/imgui/*" }
 		includedirs { "include", "source" }
-		links { "glfw3", "glfw3dll", "GFX_GL", "physics", "utility", "opengl32", "glew32"}
+		links { "glfw3", "glfw3dll", "GFX_GL", "physics","Sound", "utility", "opengl32", "glew32", "irrKlang"}
 		configuration {"Release"}
 			links {"BulletDynamics", "BulletCollision", "BulletLinearMath" }
 		configuration {"Debug"}
@@ -74,11 +74,23 @@ solution "NaiveEngine"
 		kind "SharedLib"
 		defines { "PHYSICS_DLL_EXPORT", "GLM_FORCE_RADIANS" }
 		files { "source/physics/*.cpp", "source/physics/*.h"}
-		includedirs { "include", "source" }
+		includedirs { "include", "source", "include/Bullet" }
+		links { "assimp", "utility" }
 		configuration {"Release"}
-			links {"BulletDynamics", "BulletCollision", "BulletLinearMath", "utility"}
+			links {"BulletDynamics", "BulletCollision", "BulletLinearMath"}
 		configuration {"Debug"}
-			links {"BulletDynamics_Debug", "BulletCollision_Debug", "BulletLinearMath_Debug" , "utility"}
+			links {"BulletDynamics_Debug", "BulletCollision_Debug", "BulletLinearMath_Debug"}
+
+	project "SOUND"
+		targetname "SOUND"
+		debugdir ""
+		location ( location_path )
+		language "C++"
+		kind "SharedLib"
+		defines "SOUND_DLL_EXPORT"
+		files { "source/sound/*.cpp", "source/sound/*.h"}
+		includedirs { "include", "source" }
+		links { "irrKlang" }
 
 	project "UTILITY"
 		targetname "UTILITY"

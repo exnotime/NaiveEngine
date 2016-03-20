@@ -12,9 +12,10 @@ SubSystemSet::~SubSystemSet() {
 void SubSystemSet::AddSubSystem( SubSystem* ss, uint32_t startUpPrio, uint32_t updatePrio, uint32_t shutdownPrio) {
 	SubSystemEntry sse;
 	sse.ss = ss;
-	sse.start = startUpPrio;
-	sse.update = updatePrio;
-	sse.shutdown = shutdownPrio;
+	
+	sse.start = (startUpPrio == SUBSYSTEM_INPUT_ORDER) ? m_Entries.size() : startUpPrio;
+	sse.update = (updatePrio == SUBSYSTEM_INPUT_ORDER) ? m_Entries.size() : updatePrio;
+	sse.shutdown = (shutdownPrio == SUBSYSTEM_INPUT_ORDER) ? m_Entries.size() : shutdownPrio;
 
 	m_Entries.push_back(sse);
 	m_Updated = true;
@@ -47,7 +48,7 @@ void SubSystemSet::UpdateSubSystems(const float deltaTime) {
 
 void SubSystemSet::ShutdownSubSystems() {
 	auto sortByShutdown = [](const SubSystemEntry& lhs, const SubSystemEntry& rhs) {
-		return lhs.start < rhs.start;
+		return lhs.shutdown < rhs.shutdown;
 	};
 	std::sort(m_Entries.begin(), m_Entries.end(), sortByShutdown);
 

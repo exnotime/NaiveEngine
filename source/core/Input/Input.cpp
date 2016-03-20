@@ -16,6 +16,7 @@ Input& Input::GetInstance() {
 void Input::Update() {
 	m_MouseDelta = glm::dvec2(0);
 	memcpy(m_KeysLastFrame, m_Keys, sizeof(int) * GLFW_KEY_LAST);
+	memcpy(m_MouseButtonsLastFrame, m_MouseButtons, sizeof(int) * GLFW_MOUSE_BUTTON_LAST);
 }
 
 void Input::SetKeyState(int key, int state){
@@ -35,6 +36,10 @@ void Input::SetMousebuttonState(int button, int state) {
 }
 bool Input::IsMousebuttonDown(int button) {
 	return m_MouseButtons[button] == GLFW_PRESS;
+}
+
+bool Input::IsMousebuttonPushed(int button) {
+	return (m_MouseButtonsLastFrame[button] == GLFW_PRESS || m_MouseButtonsLastFrame[button] == GLFW_REPEAT) && m_MouseButtons[button] == GLFW_RELEASE;
 }
 void Input::SetCursorMode(GLFWwindow* window, int mode) {
 	glfwSetInputMode(window, GLFW_CURSOR, mode);

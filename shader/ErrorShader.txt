@@ -296,7 +296,7 @@ vec4 CalcPLight( Light light, vec3 inNormal, vec3 posw, vec3 campos, vec3 baseCo
 {
 	vec4 lightColor = vec4(0);
 	vec3 lightDir = posw - light.Position;
-	float dist = length(lightDir);
+	float dist = double(length(lightDir));
 	if(dist <= light.Range)
 	{
 		lightDir = normalize(lightDir);

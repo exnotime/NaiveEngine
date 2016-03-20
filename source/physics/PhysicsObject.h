@@ -2,5 +2,6 @@
 #include <Bullet/btBulletDynamicsCommon.h>
 
 struct PhysicsObject {
-	btCollisionObject* CollisionObject;
+	btRigidBody* Body;
+	unsigned int EntityUID;
 };

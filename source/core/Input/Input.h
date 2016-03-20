@@ -9,6 +9,7 @@ public:
 	void SetKeyState(int key, int state);
 	void SetMousebuttonState(int button, int state);
 	bool IsMousebuttonDown(int button);
+	bool IsMousebuttonPushed(int button);
 	bool IsKeyDown(int key);
 	bool IsKeyPushed(int key);
 	void SetCursorMode(GLFWwindow* window,int mode);
@@ -21,6 +22,7 @@ private:
 	int m_Keys[GLFW_KEY_LAST];
 	int m_KeysLastFrame[GLFW_KEY_LAST];
 	int m_MouseButtons[GLFW_MOUSE_BUTTON_LAST];
+	int m_MouseButtonsLastFrame[GLFW_MOUSE_BUTTON_LAST];
 	glm::dvec2 m_MousePos;
 	glm::dvec2 m_MouseDelta;
 };

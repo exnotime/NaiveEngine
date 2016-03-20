@@ -2,6 +2,7 @@
 #include "SubSystem.h"
 #include <stdint.h>
 #include <vector>
+#define SUBSYSTEM_INPUT_ORDER -1
 namespace core {
 	struct SubSystemEntry {
 		uint32_t start;
