@@ -83,7 +83,7 @@ void SpawnBullet(const glm::vec3& position, const glm::vec3& orientation, const 
 	g_ComponentManager.CreateComponent(&lc, entity, LightComponent::Flag);
 }
 
-void SpawnLevelObject( const std::string& filename, const glm::vec3& position, const glm::quat& orientation, const glm::vec3& scale ) {
+void SpawnLevelObject( const std::string& filename, const glm::vec3& position, const glm::quat& orientation, const glm::vec3& scale, const glm::vec4& color ) {
 	Entity& entity = g_EntityManager.CreateEntity();
 	entity.Tag = ENTITY_TYPE::MODEL;
 	//set up placement component
@@ -98,7 +98,7 @@ void SpawnLevelObject( const std::string& filename, const glm::vec3& position, c
 	g_ComponentManager.CreateComponent(&rbc, entity, RigidBodyComponent::Flag);
 
 	ModelComponent mc;
-	mc.Color = glm::vec4(1);
+	mc.Color = color;
 	mc.Model = gfx::g_ModelBank.LoadModel(filename.c_str());
 	g_ComponentManager.CreateComponent(&mc, entity, ModelComponent::Flag);
 }

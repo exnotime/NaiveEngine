@@ -25,8 +25,8 @@ void SSStartup::Startup() {
 	//SpawnShape(BASIC_SHAPE::CUBE, glm::vec3(0, 0, 3), glm::vec3(3, 3, 1), 0, glm::vec4(0.5f,0.5f,0.5f,1.0f));
 	//SpawnShape(BASIC_SHAPE::CUBE, glm::vec3(-3, 0, 0), glm::vec3(1, 3, 3), 0, glm::vec4(0.5f,0.5f,0.5f,1.0f));
 	//SpawnShape(BASIC_SHAPE::CUBE, glm::vec3(0, 0, -3), glm::vec3(3, 3, 1), 0, glm::vec4(0.5f,0.5f,0.5f,1.0f));
-	SpawnLevelObject("asset/model/test/TestLevel.dae", glm::vec3(0), glm::quat(1,0,0,0), glm::vec3(10));
-	SpawnPlayer(glm::vec3(0, 10, 0), glm::vec3(0.6f, 1.8f, 0.3f));
+	SpawnLevelObject("asset/model/test/TestLevel.dae", glm::vec3(0), glm::quat(1,0,0,0), glm::vec3(1), glm::vec4(0.4f,0.4f,0.4f,1.0f));
+	SpawnPlayer(glm::vec3(0, 0, 0), glm::vec3(0.6f, 1.8f, 0.3f));
 }
 
 void SSStartup::Update(const float deltaTime) {
