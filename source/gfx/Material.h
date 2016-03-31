@@ -1,7 +1,7 @@
 #pragma once
 #include <glm/glm.hpp>
 namespace gfx {
-typedef int TextureHandle;
+typedef unsigned int TextureHandle;
 class Material {
   public:
 	Material() { };

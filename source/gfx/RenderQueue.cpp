@@ -3,7 +3,6 @@
 #include "ShaderBank.h"
 gfx::RenderQueue::RenderQueue() {
 	m_ModelQueue.reserve(50);
-	m_TerrainQueue.reserve(20);
 	m_ShaderInputBuffer.reserve(MAX_OBJECTS);
 	m_TransparentShaderInputBuffer.reserve(MAX_OBJECTS);
 }
@@ -55,25 +54,11 @@ void gfx::RenderQueue::Enqueue(ModelHandle model, const ShaderInput& input, floa
 	m_TransparentModelQueue.push_back(mo);
 	m_TransparentShaderInputBuffer.insert(m_TransparentShaderInputBuffer.end(), input);
 }
-void gfx::RenderQueue::Enqueue(const gfx::TerrainDeformation& td){
-	m_TerrainDeformations.push_back(td);
-}
-
-void gfx::RenderQueue::Enqueue(const TerrainObject& to) {
-	m_TerrainQueue.push_back(to);
-}
-
-void gfx::RenderQueue::Enqueue(const DeferedDecal& dd) {
-	m_DeferedDecals.push_back(dd);
-}
 
 void gfx::RenderQueue::Clear() {
 	m_ModelQueue.clear();
-	m_TerrainQueue.clear();
 	m_ShaderInputBuffer.clear();
 	m_TransparentShaderInputBuffer.clear();
 	m_Views.clear();
-	m_TerrainDeformations.clear();
-	m_DeferedDecals.clear();
 	m_TransparentModelQueue.clear();
 }

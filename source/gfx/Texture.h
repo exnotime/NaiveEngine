@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <GL/glew.h>
 #include <string>
-
+#include <stdint.h>
 typedef int TextureHandle;
 namespace gfx {
 enum TextureType {
@@ -22,6 +22,8 @@ class Texture {
 	bool GetLoaded();
 	void SetFilename( const char* filename );
 	std::string GetFilename();
+	uint64_t GetAddress();
+
 	float GetWidth() {
 		return (float)m_Width;
 	}

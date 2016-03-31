@@ -4,6 +4,7 @@
 #include "Model.h"
 #include "Material.h"
 #include "gfxutility.h"
+#include "BufferManager.h"
 gfx::MaterialBank::MaterialBank() {
 }
 
@@ -126,4 +127,23 @@ TextureHandle gfx::MaterialBank::LoadTexture(const char* filename, TextureType t
 
 gfx::Texture* gfx::MaterialBank::GetTexture(TextureHandle handle) {
 	return m_Textures[handle];
+}
+void gfx::MaterialBank::BuildMaterialBuffer(){
+	std::vector<SurfaceMaterial> mats;
+	std::vector<uint64_t> textures;
+
+	g_BufferManager.CreateBuffer("MaterialBuffer", GL_SHADER_STORAGE_BUFFER, (sizeof(SurfaceMaterial) + sizeof(uint64_t)) * MAX_MATERIAL_COUNT, GL_STATIC_DRAW);
+	SurfaceMaterial surfMat;
+	for (auto& mat : m_Materials) {
+		surfMat.Albedo = mat->GetAlbedoTexture();
+		surfMat.Normal = mat->GetNormalTexture();
+		surfMat.Roughnes = mat->GetRoughnessTexture();
+		surfMat.Metallic = mat->GetMetalTexture();
+		mats.push_back(surfMat);
+	}
+	for (auto& tex : m_Textures) {
+		textures.push_back( tex->GetAddress());
+	}
+	g_BufferManager.UpdateBuffer("MaterialBuffer", 0, mats.data(), sizeof(SurfaceMaterial) * mats.size());
+	g_BufferManager.UpdateBuffer("MaterialBuffer", sizeof(SurfaceMaterial) * MAX_MATERIAL_COUNT, textures.data(), sizeof(uint64_t) * textures.size());
 }

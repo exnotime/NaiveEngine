@@ -5,10 +5,18 @@
 #include "Texture.h"
 #include "GFXLibraryDefine.h"
 struct aiScene;
-typedef int TextureHandle;
+typedef unsigned int TextureHandle;
+
 namespace gfx {
 struct Model;
 class Material;
+#define MAX_MATERIAL_COUNT 1000
+struct SurfaceMaterial {
+	uint32_t Albedo;
+	uint32_t Normal;
+	uint32_t Roughnes;
+	uint32_t Metallic;
+};
 class MaterialBank {
   public:
 	~MaterialBank();
@@ -20,6 +28,7 @@ class MaterialBank {
 	Material* GetMaterial(const std::string& name);
 	GFX_API TextureHandle LoadTexture(const char* filename, TextureType type);
 	GFX_API Texture* GetTexture(TextureHandle handle);
+	GFX_API void BuildMaterialBuffer();
 	int GetMaterialCount() {
 		return (int)m_Materials.size();
 	}

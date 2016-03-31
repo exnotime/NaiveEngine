@@ -35,7 +35,6 @@ layout(binding = 5) uniform sampler2DShadow g_ShadowMap;
 layout(binding = 6) uniform samplerCube g_SkyCubeTex;
 layout(binding = 7) uniform samplerCube g_IrradianceCubeTex;
 
-
 //shared
 #define MAX_LIGHTS_PER_TILE 256
 #define MAX_POINTLIGHTS 1024
@@ -53,6 +52,7 @@ layout(std430, binding = 3) readonly buffer LightBuffer
 {
 	Light lights[MAX_NUM_LIGHTS];
 };
+
 vec3 DecodeNormal(vec4 enc){
     vec2 fenc = enc.xy*4-2;
     float f = dot(fenc,fenc);

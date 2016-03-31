@@ -93,3 +93,10 @@ void Texture::Resize(int width, int height) {
 	m_Type == TEXTURE_COLOR ? intFormat = GL_RGBA : intFormat = GL_RED;
 	glTexStorage2D(GL_TEXTURE_2D, 1, intFormat, width, height);
 }
+
+uint64_t Texture::GetAddress(){
+	uint64_t address = glGetTextureHandleARB(m_Handle);
+	//Make resident to GPU so it wont be moved around suddendly in GPU memory
+	glMakeTextureHandleResidentARB(address);
+	return address;
+}

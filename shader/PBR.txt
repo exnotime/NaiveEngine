@@ -167,7 +167,7 @@ vec3 GGX_Specular(samplerCube SpecEnvMap, vec3 normal, vec3 toeye, float roughne
  	NoV = max(0.001, NoV);
  	vec3 R = 2 * dot(normal, toeye) * normal - toeye;
 
- 	ivec2 texDim = textureSize(g_SkyCubeTex,0);
+ 	ivec2 texDim = textureSize(envMap,0);
 	float numMips = ceil(log2(float(max(texDim.x,texDim.y)))) - 1.0f;
 	float mipLevel = numMips * roughness;
 
